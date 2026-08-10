@@ -1,8 +1,8 @@
 export default function CTA(){
     return (
         <section className="px-6 py-24">
-            <div className="mx-auto max-w-5xl rounded-3xl bg-black px-8 py-16 text-white md:px-16">
-                <p className="text-sm font-semibold uppercase tracking-wider text-gray-400">
+            <div className="mx-auto max-w-5xl rounded-3xl border border-[#013364] bg-[#013364] px-8 py-16 text-white md:px-16">
+                <p className="text-sm font-semibold uppercase tracking-wider text-white/70">
                     Start Preparing Today
                 </p>
 
@@ -12,7 +12,7 @@ export default function CTA(){
                     into your competitive advantage.
                 </h2>
 
-                <p className="mx-auto mt-5 max-w-2xl text-gray-300">
+                <p className="mx-auto mt-5 max-w-2xl text-white/75">
                     Analyse your resume, practise realistic AI interviews, and get personalised feedback to become more confident before your next interview.
                 </p>
 

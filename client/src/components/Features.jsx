@@ -21,31 +21,37 @@ const features = [
     },
     {
     number: "05",
+    title: "Personalised Feedback",
+    description: "Receive actionable feedback instead of simply getting a score at the end of your interview.",
+
+    },
+    {
+    number: "06",
     title: "Community",
     description: "Connect with other candidates, share experiences, discuss interviews, and learn from the community.",
     },
 ]
 export default function Features(){
     return(
-        <section className="px-6 py-24">
+        <section id="features" className="px-6 py-24">
             <div className="mx-auto max-w-7xl">
                 {/* sectional heading */}
                 <div className="max-w-2xl">
-                    <p className="text-sm font-semibold uppercase tracking-wider">
+                    <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#013364]">
                         Features
                     </p>
-                    <h2 className="mt-3 text-4xl font-bold">Everything you need to prepare with confidence.</h2>
-                    <p className="mt-4 text-gray-600">InterviewIQ brings your entire interview preparation process into one intelligent platform.</p>
+                    <h2 className="mt-3 text-4xl font-bold tracking-tight text-gray-950 md:text-5xl">Everything you need to prepare with confidence.</h2>
+                    <p className="mt-5 text-lg leading-8 text-gray-600">InterviewIQ brings your entire interview preparation process into one intelligent platform.</p>
                 </div>
 
                 {/* feature cards */}
-                <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                     {features.map((feature)=>(
                         <div key={feature.number}
-                            className="rounded-2xl border p-6 transition hover:shadow-md">
-                            <span className="text-sm font-semibold text-gray-400">{feature.number}</span>
-                            <h3 className="mt-6 text-xl font-semibold">{feature.title}</h3>
-                            <p className="mt-3 leading-relaxed text-gray-600">{feature.description}</p>
+                            className="rounded-2xl border border-gray-200 bg-white p-7 transition hover:translate-y-1 hover:border-[#013364]/20 hover:shadow-sm">
+                            <span className="text-sm font-semibold text-[#013364]">{feature.number}</span>
+                            <h3 className="mt-7 text-xl font-semibold text-gray-950">{feature.title}</h3>
+                            <p className="mt-3 leading-7 text-gray-600">{feature.description}</p>
                         </div>
                     ))}
                 </div>
