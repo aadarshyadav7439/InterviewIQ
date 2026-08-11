@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute"
 
 import PublicLayout from "./layouts/PublicLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -33,7 +34,7 @@ function App() {
 
           {/* Dashboard pages */}
           <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
             <Route path="/resume" element={<Resume />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/profile" element={<Profile />} />
