@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signupUser, loginUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-function Signup() {
+function Auth() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -16,11 +16,18 @@ function Signup() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
+
+  const location = useLocation();
+
+  const [isLogin, setIsLogin] = useState(
+    location.pathname === "/login"
+  );
+  useEffect(() => {
+    setIsLogin(location.pathname === "/login");
+  }, [location.pathname]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -36,9 +43,7 @@ function Signup() {
     setLoading(true);
 
     try {
-      // =========================
       // SIGNUP
-      // =========================
       if (!isLogin) {
         if (!formData.name.trim()) {
           throw new Error("Please enter your name");
@@ -63,7 +68,7 @@ function Signup() {
         });
 
         // Store JWT and update authentication state
-        login(data.token);
+        login(data.token, data.user);
 
         console.log("Signup Successful", data);
 
@@ -73,9 +78,7 @@ function Signup() {
         return;
       }
 
-      // =========================
       // LOGIN
-      // =========================
 
       if (!formData.email.trim()) {
         throw new Error("Please enter your email");
@@ -91,7 +94,7 @@ function Signup() {
       });
 
       // Store JWT and update authentication state
-      login(data.token);
+      login(data.token, data.user);
 
       console.log("Login Successful", data);
 
@@ -111,12 +114,12 @@ function Signup() {
 
   const switchToLogin = () => {
     setError("");
-    setIsLogin(true);
+    navigate("/login");
   };
 
   const switchToSignup = () => {
     setError("");
-    setIsLogin(false);
+    navigate("/signup");
   };
 
   return (
@@ -459,4 +462,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Auth;

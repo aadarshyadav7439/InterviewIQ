@@ -22,11 +22,11 @@ export default function Sidebar() {
         <NavLink to="/reports" className={navLinkClass}>
           Reports
         </NavLink>
-        <NavLink to="/companies" className={navLinkClass}>
-          Companies
+        <NavLink to="/profile" className={navLinkClass}>
+          Profile
         </NavLink>
-        <NavLink to="/community" className={navLinkClass}>
-          Community
+        <NavLink to="/settings" className={navLinkClass}>
+          Settings
         </NavLink>
       </nav>
     </aside>

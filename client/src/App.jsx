@@ -6,8 +6,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import InterviewLayout from "./layouts/InterviewLayout";
 
 import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Resume from "./pages/Resume";
 import Interview from "./pages/Interview";
@@ -26,15 +25,15 @@ function App() {
           {/* public pages */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Auth />} />
+            <Route path="/signup" element={<Auth />} />
             <Route path="/companies" element={<Companies />} />
             <Route path="/community" element={<Community />} />
           </Route>
 
           {/* Dashboard pages */}
-          <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
+          <Route element={<ProtectedRoute> <DashboardLayout /> </ProtectedRoute>}>
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/resume" element={<Resume />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/profile" element={<Profile />} />
@@ -42,7 +41,7 @@ function App() {
           </Route>
 
           {/* Interview page */}
-          <Route element={<InterviewLayout />}>
+          <Route element={ <ProtectedRoute> <InterviewLayout /> </ProtectedRoute> }>
             <Route path="/interview" element={<Interview />} />
           </Route>
         </Routes>
