@@ -1,8 +1,37 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useEffect, useState } from "react";
+import { getInterviews } from "../services/interviewServices";
 
 function Dashboard() {
-  const {user} = useAuth();
+  const { user } = useAuth();
+  const [interviews, setInterviews] = useState([]);
+
+  const completedInterviews = interviews.filter(
+    (interview) => interview.status === "completed",
+  );
+
+  const scoredInterviews = interviews.filter(
+    (interview) => interview.score !== null,
+  );
+  const averageScore =
+    scoredInterviews.length > 0
+      ? scoredInterviews.reduce((sum, interview) => sum + interview.score, 0) /
+        scoredInterviews.length
+      : null;
+
+  useEffect(() => {
+    const fetchInterviews = async () => {
+      try {
+        const data = await getInterviews();
+        setInterviews(data.interviews);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchInterviews();
+  }, []);
+
   return (
     <div className="min-h-full bg-[#fafafa]">
       {/* Header */}
@@ -13,7 +42,7 @@ function Dashboard() {
           </p>
 
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-950">
-            Welcome to InterviewIQ 👋 , {user.name}
+            Welcome to InterviewIQ 👋 , {user?.name}
           </h1>
 
           <p className="mt-2 text-sm text-gray-500">
@@ -34,34 +63,30 @@ function Dashboard() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-xl border border-gray-200 bg-white p-5">
           <p className="text-sm text-gray-500">Interviews</p>
-          <p className="mt-2 text-3xl font-bold text-gray-950">0</p>
-          <p className="mt-1 text-xs text-gray-400">
-            Completed interviews
+          <p className="mt-2 text-3xl font-bold text-gray-950">
+            {completedInterviews.length}
           </p>
+          <p className="mt-1 text-xs text-gray-400">Completed interviews</p>
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-white p-5">
           <p className="text-sm text-gray-500">Average Score</p>
-          <p className="mt-2 text-3xl font-bold text-gray-950">—</p>
-          <p className="mt-1 text-xs text-gray-400">
-            Based on your interviews
+          <p className="mt-2 text-3xl font-bold text-gray-950">
+            {averageScore !== null ? Math.round(averageScore) : "--"}
           </p>
+          <p className="mt-1 text-xs text-gray-400">Based on your interviews</p>
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-white p-5">
           <p className="text-sm text-gray-500">Questions Practiced</p>
           <p className="mt-2 text-3xl font-bold text-gray-950">0</p>
-          <p className="mt-1 text-xs text-gray-400">
-            Across all interviews
-          </p>
+          <p className="mt-1 text-xs text-gray-400">Across all interviews</p>
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-white p-5">
           <p className="text-sm text-gray-500">Resume</p>
           <p className="mt-2 text-3xl font-bold text-gray-950">—</p>
-          <p className="mt-1 text-xs text-gray-400">
-            No resume analyzed yet
-          </p>
+          <p className="mt-1 text-xs text-gray-400">No resume analyzed yet</p>
         </div>
       </div>
 
@@ -91,8 +116,8 @@ function Dashboard() {
             </h3>
 
             <p className="mt-1 max-w-sm text-sm leading-6 text-gray-500">
-              Start your first interview to begin tracking your performance
-              and identify areas where you can improve.
+              Start your first interview to begin tracking your performance and
+              identify areas where you can improve.
             </p>
 
             <Link
@@ -106,9 +131,7 @@ function Dashboard() {
 
         {/* Quick Actions */}
         <div className="rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="text-lg font-semibold text-gray-950">
-            Quick Actions
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-950">Quick Actions</h2>
 
           <p className="mt-1 text-sm text-gray-500">
             Continue your preparation.
