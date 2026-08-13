@@ -16,16 +16,9 @@ export const uploadResume = async (req, res) => {
           resource_type: "raw",
         },
         (error, result) => {
-  if (error) {
-    console.log("CLOUDINARY ERROR FULL:", error);
-    console.log("ERROR MESSAGE:", error?.message);
-    console.log("HTTP CODE:", error?.http_code);
-    console.log("ERROR NAME:", error?.name);
-    reject(error);
-  } else {
-    resolve(result);
-  }
-}
+          if (error) reject(error);
+          else resolve(result);
+        }
       );
 
       uploadStream.end(req.file.buffer);
