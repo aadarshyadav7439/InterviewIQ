@@ -36,7 +36,7 @@ function Dashboard() {
     <div className="min-h-full bg-[#fafafa]">
       {/* Header */}
       <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
-        <div>
+        <div className="">
           <p className="text-sm font-medium uppercase tracking-[0.15em] text-[#013364]">
             Dashboard
           </p>
