@@ -1,38 +1,58 @@
-import { createContext, useContext, useState,  useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { getProfile } from "../services/authService";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [user, setUser] = useState(null);
+  const [isRestoring, setIsRestoring] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      if (!token) return;
+    const restoreSession = async () => {
+      if (!token) {
+        setIsRestoring(false);
+        return;
+      }
+
       try {
-        const data = await getProfile(token);
+        const data = await getProfile();
         setUser(data.user);
       } catch (error) {
-        console.log("Failed to fetch user:", error);
-        logout();
+        console.error("Failed to restore session:", error);
+
+        localStorage.removeItem("token");
+        setToken(null);
+        setUser(null);
+      } finally {
+        setIsRestoring(false);
       }
     };
-    fetchUser();
+
+    restoreSession();
   }, [token]);
 
-  const login = (token,user) => {
-    localStorage.setItem("token", token);
-    setToken(token);
-    setUser(user);
+  const login = (newToken, loggedInUser) => {
+    localStorage.setItem("token", newToken);
+
+    setToken(newToken);
+    setUser(loggedInUser);
+    setIsRestoring(false);
+  };
+
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+
     setToken(null);
+    setUser(null);
+    setIsRestoring(false);
   };
 
-  const isAuthenticated = !!token;
+  const isAuthenticated = Boolean(token && user);
 
   return (
     <AuthContext.Provider
@@ -40,7 +60,9 @@ export function AuthProvider({ children }) {
         token,
         user,
         isAuthenticated,
+        isRestoring,
         login,
+        updateUser,
         logout,
       }}
     >

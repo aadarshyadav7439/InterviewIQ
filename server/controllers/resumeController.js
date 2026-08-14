@@ -1,5 +1,6 @@
 import Resume from "../models/Resume.js";
 import cloudinary from "../config/cloudinary.js";
+import { PDFParse } from "pdf-parse";
 
 export const uploadResume = async (req, res) => {
   try {
@@ -8,7 +9,7 @@ export const uploadResume = async (req, res) => {
         message: "Please upload a resume",
       });
     }
-
+    //cloudinary pe upload
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
@@ -24,10 +25,20 @@ export const uploadResume = async (req, res) => {
       uploadStream.end(req.file.buffer);
     });
 
+    //resume pdf ki parsing
+    const parser = new PDFParse({
+      data: req.file.buffer,
+    });
+
+    const pdfResult = await parser.getText();
+    await parser.destroy();
+
+    //db me resume ko save
     const resume = await Resume.create({
       userId: req.userId,
       fileName: req.file.originalname,
       fileUrl: result.secure_url,
+      extractedText: pdfResult.text,
     });
 
     res.status(201).json({
