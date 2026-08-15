@@ -1,10 +1,46 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
+import {
+  ArrowRight,
+  BarChart3,
+  Clock3,
+  FileText,
+  Mic2,
+  TrendingUp,
+} from "lucide-react";
 import { getInterviews } from "../services/interviewServices";
 
+const dummyRecentInterviews = [
+  {
+    company: "Google",
+    type: "Technical",
+    score: 86,
+    date: "Aug 14, 2026",
+  },
+  {
+    company: "Amazon",
+    type: "Behavioral",
+    score: 79,
+    date: "Aug 12, 2026",
+  },
+  {
+    company: "Microsoft",
+    type: "HR",
+    score: 91,
+    date: "Aug 09, 2026",
+  },
+];
+
+const performanceData = [
+  { label: "Jul 28", score: 58 },
+  { label: "Aug 02", score: 66 },
+  { label: "Aug 06", score: 63 },
+  { label: "Aug 09", score: 76 },
+  { label: "Aug 12", score: 84 },
+  { label: "Aug 14", score: 91 },
+];
+
 function Dashboard() {
-  const { user } = useAuth();
   const [interviews, setInterviews] = useState([]);
 
   const completedInterviews = interviews.filter(
@@ -12,41 +48,75 @@ function Dashboard() {
   );
 
   const scoredInterviews = interviews.filter(
-    (interview) => interview.score !== null,
+    (interview) =>
+      interview.score !== null && interview.score !== undefined,
   );
+
   const averageScore =
     scoredInterviews.length > 0
-      ? scoredInterviews.reduce((sum, interview) => sum + interview.score, 0) /
-        scoredInterviews.length
+      ? scoredInterviews.reduce(
+          (sum, interview) => sum + interview.score,
+          0,
+        ) / scoredInterviews.length
       : null;
 
   useEffect(() => {
     const fetchInterviews = async () => {
       try {
         const data = await getInterviews();
-        setInterviews(data.interviews);
+        setInterviews(data.interviews || []);
       } catch (error) {
         console.log(error);
       }
     };
+
     fetchInterviews();
   }, []);
 
+  const hasInterviews = interviews.length > 0;
+
+  const questionsPracticed = interviews.reduce(
+    (total, interview) =>
+      total + (interview.questions?.length || 0),
+    0,
+  );
+
+  const displayedRecentInterviews = hasInterviews
+    ? interviews.slice(0, 3).map((interview) => ({
+        company: interview.company || "Interview",
+        type: interview.type || "General",
+        score: interview.score ?? "--",
+        date: interview.createdAt
+          ? new Date(interview.createdAt).toLocaleDateString(
+              "en-US",
+              {
+                month: "short",
+                day: "2-digit",
+                year: "numeric",
+              },
+            )
+          : "Recent",
+      }))
+    : dummyRecentInterviews;
+
   return (
-    <div className="min-h-full bg-[#fafafa]">
+    <div className="mx-auto max-w-7xl">
+
       {/* Header */}
-      <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
-        <div className="">
-          <p className="text-sm font-medium uppercase tracking-[0.15em] text-[#013364]">
-            Dashboard
+
+      <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#013364]">
+            Your progress
           </p>
 
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-950">
-            Welcome to InterviewIQ 👋 , {user?.name}
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
+            Keep getting better.
           </h1>
 
-          <p className="mt-2 text-sm text-gray-500">
-            Here's an overview of your interview preparation.
+          <p className="mt-3 max-w-xl text-sm leading-6 text-gray-500">
+            Practice consistently, review your performance, and build
+            confidence before your next interview.
           </p>
         </div>
 
@@ -55,134 +125,346 @@ function Dashboard() {
           className="inline-flex w-fit items-center rounded-lg bg-[#013364] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#081f38]"
         >
           Start Interview
-          <span className="ml-2">→</span>
+          <ArrowRight size={16} className="ml-2" />
         </Link>
       </div>
 
       {/* Stats */}
+
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
-          <p className="text-sm text-gray-500">Interviews</p>
-          <p className="mt-2 text-3xl font-bold text-gray-950">
-            {completedInterviews.length}
+
+        {/* Interviews */}
+
+        <div className="rounded-xl border border-gray-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#013364]/20 hover:shadow-sm">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm text-gray-500">
+                Interviews
+              </p>
+
+              <p className="mt-2 text-3xl font-bold tracking-tight text-gray-950">
+                {completedInterviews.length}
+              </p>
+            </div>
+
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#013364]/6 text-[#013364]">
+              <Mic2 size={18} strokeWidth={1.8} />
+            </div>
+          </div>
+
+          <p className="mt-2 text-xs text-gray-400">
+            Completed interviews
           </p>
-          <p className="mt-1 text-xs text-gray-400">Completed interviews</p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
-          <p className="text-sm text-gray-500">Average Score</p>
-          <p className="mt-2 text-3xl font-bold text-gray-950">
-            {averageScore !== null ? Math.round(averageScore) : "--"}
+        {/* Average Score */}
+
+        <div className="rounded-xl border border-gray-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#013364]/20 hover:shadow-sm">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm text-gray-500">
+                Average Score
+              </p>
+
+              <p className="mt-2 text-3xl font-bold tracking-tight text-gray-950">
+                {averageScore !== null
+                  ? Math.round(averageScore)
+                  : "--"}
+              </p>
+            </div>
+
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#013364]/6 text-[#013364]">
+              <TrendingUp size={18} strokeWidth={1.8} />
+            </div>
+          </div>
+
+          <p className="mt-2 text-xs text-gray-400">
+            Across scored interviews
           </p>
-          <p className="mt-1 text-xs text-gray-400">Based on your interviews</p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
-          <p className="text-sm text-gray-500">Questions Practiced</p>
-          <p className="mt-2 text-3xl font-bold text-gray-950">0</p>
-          <p className="mt-1 text-xs text-gray-400">Across all interviews</p>
+        {/* Questions */}
+
+        <div className="rounded-xl border border-gray-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#013364]/20 hover:shadow-sm">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm text-gray-500">
+                Questions
+              </p>
+
+              <p className="mt-2 text-3xl font-bold tracking-tight text-gray-950">
+                {questionsPracticed}
+              </p>
+            </div>
+
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#013364]/6 text-[#013364]">
+              <BarChart3 size={18} strokeWidth={1.8} />
+            </div>
+          </div>
+
+          <p className="mt-2 text-xs text-gray-400">
+            Questions practiced
+          </p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
-          <p className="text-sm text-gray-500">Resume</p>
-          <p className="mt-2 text-3xl font-bold text-gray-950">—</p>
-          <p className="mt-1 text-xs text-gray-400">No resume analyzed yet</p>
+        {/* Resume */}
+
+        <div className="rounded-xl border border-gray-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#013364]/20 hover:shadow-sm">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm text-gray-500">
+                Resume Score
+              </p>
+
+              <p className="mt-2 text-3xl font-bold tracking-tight text-gray-950">
+                78
+              </p>
+            </div>
+
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#013364]/6 text-[#013364]">
+              <FileText size={18} strokeWidth={1.8} />
+            </div>
+          </div>
+
+          <p className="mt-2 text-xs text-gray-400">
+            Current resume score
+          </p>
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Performance + Quick Actions */}
+
       <div className="mt-6 grid gap-6 xl:grid-cols-3">
-        {/* Interview Progress */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 xl:col-span-2">
-          <div className="flex items-center justify-between">
+
+        {/* Performance */}
+
+        <section className="rounded-xl border border-gray-200 bg-white p-6 xl:col-span-2">
+
+          <div className="flex items-start justify-between gap-4">
             <div>
               <h2 className="text-lg font-semibold text-gray-950">
-                Interview Progress
+                Performance overview
               </h2>
 
               <p className="mt-1 text-sm text-gray-500">
-                Track your preparation and interview performance.
+                Track how your interview performance is improving
+                over time.
               </p>
             </div>
+
+            <span className="hidden rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 sm:inline-flex">
+              +12% improvement
+            </span>
           </div>
 
-          <div className="mt-8 flex min-h-48 flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 px-6 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-xl">
-              🎯
+          <div className="mt-8 overflow-x-auto">
+            <div className="flex h-56 min-w-[520px] items-end gap-3 border-b border-l border-gray-200 px-4 pb-0 pt-6 sm:gap-5">
+
+              {performanceData.map((item) => (
+                <div
+                  key={item.label}
+                  className="flex h-full flex-1 flex-col justify-end"
+                >
+                  <div
+                    className="rounded-t-md bg-[#013364] transition hover:bg-[#081f38]"
+                    style={{
+                      height: `${item.score}%`,
+                      opacity: item.score / 110,
+                    }}
+                  />
+
+                  <span className="mt-3 text-center text-xs text-gray-400">
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+
             </div>
-
-            <h3 className="mt-4 text-sm font-semibold text-gray-900">
-              No interviews yet
-            </h3>
-
-            <p className="mt-1 max-w-sm text-sm leading-6 text-gray-500">
-              Start your first interview to begin tracking your performance and
-              identify areas where you can improve.
-            </p>
-
-            <Link
-              to="/interview"
-              className="mt-5 text-sm font-medium text-[#013364] hover:underline"
-            >
-              Start your first interview →
-            </Link>
           </div>
-        </div>
+        </section>
 
         {/* Quick Actions */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="text-lg font-semibold text-gray-950">Quick Actions</h2>
+
+        <section className="rounded-xl border border-gray-200 bg-white p-6">
+
+          <h2 className="text-lg font-semibold text-gray-950">
+            Quick actions
+          </h2>
 
           <p className="mt-1 text-sm text-gray-500">
             Continue your preparation.
           </p>
 
           <div className="mt-6 space-y-3">
+
             <Link
               to="/resume"
-              className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-medium text-gray-800 transition hover:border-[#013364]/30 hover:bg-gray-50"
+              className="group flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3.5 transition hover:border-[#013364]/30 hover:bg-gray-50"
             >
-              <span>Analyse Resume</span>
-              <span className="text-gray-400">→</span>
+              <div className="flex items-center gap-3">
+                <FileText
+                  size={18}
+                  className="text-[#013364]"
+                  strokeWidth={1.8}
+                />
+
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    Analyze Resume
+                  </p>
+
+                  <p className="mt-0.5 text-xs text-gray-400">
+                    Improve your resume
+                  </p>
+                </div>
+              </div>
+
+              <ArrowRight
+                size={16}
+                className="text-gray-400 transition group-hover:translate-x-0.5 group-hover:text-[#013364]"
+              />
             </Link>
 
             <Link
               to="/interview"
-              className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-medium text-gray-800 transition hover:border-[#013364]/30 hover:bg-gray-50"
+              className="group flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3.5 transition hover:border-[#013364]/30 hover:bg-gray-50"
             >
-              <span>Start Interview</span>
-              <span className="text-gray-400">→</span>
+              <div className="flex items-center gap-3">
+                <Mic2
+                  size={18}
+                  className="text-[#013364]"
+                  strokeWidth={1.8}
+                />
+
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    Start Interview
+                  </p>
+
+                  <p className="mt-0.5 text-xs text-gray-400">
+                    Practice a mock interview
+                  </p>
+                </div>
+              </div>
+
+              <ArrowRight
+                size={16}
+                className="text-gray-400 transition group-hover:translate-x-0.5 group-hover:text-[#013364]"
+              />
             </Link>
 
             <Link
               to="/reports"
-              className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-medium text-gray-800 transition hover:border-[#013364]/30 hover:bg-gray-50"
+              className="group flex items-center justify-between rounded-lg border border-gray-200 px-4 py-3.5 transition hover:border-[#013364]/30 hover:bg-gray-50"
             >
-              <span>View Reports</span>
-              <span className="text-gray-400">→</span>
+              <div className="flex items-center gap-3">
+                <BarChart3
+                  size={18}
+                  className="text-[#013364]"
+                  strokeWidth={1.8}
+                />
+
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    View Reports
+                  </p>
+
+                  <p className="mt-0.5 text-xs text-gray-400">
+                    Review your performance
+                  </p>
+                </div>
+              </div>
+
+              <ArrowRight
+                size={16}
+                className="text-gray-400 transition group-hover:translate-x-0.5 group-hover:text-[#013364]"
+              />
             </Link>
+
+          </div>
+        </section>
+      </div>
+
+      {/* Recent Interviews */}
+
+      <section className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
+
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-950">
+              Recent interviews
+            </h2>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Your latest interview practice sessions.
+            </p>
+          </div>
+
+          <Link
+            to="/reports"
+            className="hidden text-sm font-medium text-[#013364] hover:underline sm:block"
+          >
+            View all
+          </Link>
+        </div>
+
+        <div className="mt-6 overflow-x-auto">
+          <div className="min-w-[600px]">
+
+            <div className="grid grid-cols-[1.5fr_1fr_0.7fr_1fr] border-b border-gray-100 px-4 pb-3 text-xs font-medium uppercase tracking-wide text-gray-400">
+              <span>Company</span>
+              <span>Type</span>
+              <span>Score</span>
+              <span>Date</span>
+            </div>
+
+            <div className="divide-y divide-gray-100">
+
+              {displayedRecentInterviews.map(
+                (interview, index) => (
+                  <div
+                    key={`${interview.company}-${interview.date}-${index}`}
+                    className="grid grid-cols-[1.5fr_1fr_0.7fr_1fr] items-center px-4 py-4 transition hover:bg-gray-50"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 text-xs font-semibold text-gray-600">
+                        {interview.company.charAt(0)}
+                      </div>
+
+                      <span className="text-sm font-medium text-gray-900">
+                        {interview.company}
+                      </span>
+                    </div>
+
+                    <span className="text-sm text-gray-500">
+                      {interview.type}
+                    </span>
+
+                    <span className="text-sm font-semibold text-gray-900">
+                      {interview.score}
+                    </span>
+
+                    <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                      <Clock3 size={14} />
+                      {interview.date}
+                    </div>
+                  </div>
+                ),
+              )}
+
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Recent Activity */}
-      <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-950">
-            Recent Activity
-          </h2>
+        <Link
+          to="/reports"
+          className="mt-5 flex items-center justify-center text-sm font-medium text-[#013364] hover:underline sm:hidden"
+        >
+          View all interviews
+          <ArrowRight size={15} className="ml-1" />
+        </Link>
 
-          <p className="mt-1 text-sm text-gray-500">
-            Your latest preparation activity will appear here.
-          </p>
-        </div>
-
-        <div className="mt-6 flex min-h-32 items-center justify-center rounded-lg bg-gray-50 px-6 text-center">
-          <p className="text-sm text-gray-500">
-            No recent activity. Start preparing to see your progress here.
-          </p>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
+import {
+  BriefcaseBusiness,
+  GraduationCap,
+  Mail,
+  Save,
+  UserCircle,
+} from "lucide-react";
 import { getProfile, updateProfile } from "../services/profileServices";
 import { useAuth } from "../context/AuthContext";
+
+const inputClassName =
+  "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-1 focus:ring-[#013364]/10";
 
 function Profile() {
   const { updateUser } = useAuth();
@@ -39,10 +49,7 @@ function Profile() {
   const handleSkillsChange = (event) => {
     setProfile((prev) => ({
       ...prev,
-      skills: event.target.value
-        .split(",")
-        .map((skill) => skill.trim())
-        .filter(Boolean),
+      skills: event.target.value,
     }));
   };
 
@@ -61,7 +68,7 @@ function Profile() {
         degree: profile.degree,
         branch: profile.branch,
         graduationYear: profile.graduationYear,
-        skills: profile.skills,
+        skills: profile.skills.split(",").map((skill) => skill.trim()).filter(Boolean),
         targetCompany: profile.targetCompany,
         targetRole: profile.targetRole,
       };
@@ -73,9 +80,7 @@ function Profile() {
       setMessage("Profile updated successfully");
     } catch (error) {
       console.error(error);
-      setError(
-        error.response?.data?.message || "Failed to update profile"
-      );
+      setError(error.response?.data?.message || "Failed to update profile");
     } finally {
       setSaving(false);
     }
@@ -83,12 +88,11 @@ function Profile() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center bg-[#fafafa]">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-[#013364]" />
-          <p className="mt-4 text-sm text-gray-500">
-            Loading your profile...
-          </p>
+
+          <p className="mt-4 text-sm text-gray-500">Loading your profile...</p>
         </div>
       </div>
     );
@@ -96,13 +100,17 @@ function Profile() {
 
   if (!profile) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center bg-[#fafafa] px-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-          <h1 className="text-xl font-semibold text-gray-950">
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600">
+            <UserCircle size={24} />
+          </div>
+
+          <h1 className="mt-4 text-xl font-semibold text-gray-950">
             Profile unavailable
           </h1>
 
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm leading-6 text-gray-500">
             {error || "We couldn't load your profile."}
           </p>
         </div>
@@ -110,290 +118,348 @@ function Profile() {
     );
   }
 
+  const initials =
+    profile.name
+      ?.split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part.charAt(0).toUpperCase())
+      .join("") || "A";
+
   return (
-    <div className="min-h-full bg-[#fafafa] px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-5xl">
+    <div className="mx-2 max-w-6xl">
+      {/* PAGE HEADER */}
 
-        {/* PAGE HEADER */}
+      <div className="mb-8">
+        <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[#013364]">
+          Account
+        </p>
 
-        <div className="mb-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#013364]">
-            Your profile
-          </p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
+          Your profile
+        </h1>
 
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
-            Personalize your InterviewIQ experience
-          </h1>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-500">
+          Keep your background, skills, and career goals up to date so
+          InterviewIQ can personalize your preparation.
+        </p>
+      </div>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-500">
-            Keep your background, skills, and career goals up to date so your
-            interview preparation can be more personalized.
-          </p>
+      {/* PROFILE SUMMARY */}
+
+      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-6 sm:p-7">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+          {/* Avatar */}
+
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#013364] text-xl font-semibold text-white">
+            {initials}
+          </div>
+
+          {/* Identity */}
+
+          <div className="min-w-0 flex-1">
+            <h2 className="truncate text-xl font-semibold tracking-tight text-gray-950">
+              {profile.name || "Your name"}
+            </h2>
+
+            <div className="mt-2 flex flex-col gap-1.5 text-sm text-gray-500 sm:flex-row sm:items-center sm:gap-4">
+              <span className="flex items-center gap-1.5">
+                <Mail size={14} />
+                {profile.email}
+              </span>
+
+              {profile.targetRole && (
+                <span className="flex items-center gap-1.5">
+                  <BriefcaseBusiness size={14} />
+                  {profile.targetRole}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Status */}
+
+          <div className="hidden rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 sm:block">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-400">
+              Profile status
+            </p>
+
+            <p className="mt-1 text-sm font-medium text-gray-900">
+              Keep it updated
+            </p>
+          </div>
         </div>
+      </section>
 
-        {/* STATUS MESSAGES */}
+      {/* STATUS */}
 
-        {error && (
-          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            {error}
-          </div>
-        )}
+      {error && (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
-        {message && (
-          <div className="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-            {message}
-          </div>
-        )}
+      {message && (
+        <div className="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          {message}
+        </div>
+      )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* PERSONAL INFORMATION */}
 
-          {/* PERSONAL INFORMATION */}
+        <section className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-7">
+          <div className="mb-6 flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#013364]/6 text-[#013364]">
+              <UserCircle size={18} strokeWidth={1.8} />
+            </div>
 
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-7">
-
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold tracking-tight text-gray-950">
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight text-gray-950">
                 Personal information
               </h2>
 
               <p className="mt-1 text-sm text-gray-500">
-                Basic information about you and your academic background.
+                Your basic details and academic background.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2">
+            {/* NAME */}
+
+            <div>
+              <label
+                htmlFor="profile-name"
+                className="mb-2 block text-sm font-medium text-gray-800"
+              >
+                Full name
+              </label>
+
+              <input
+                id="profile-name"
+                name="name"
+                type="text"
+                value={profile.name || ""}
+                onChange={handleChange}
+                placeholder="Your full name"
+                className={inputClassName}
+              />
+            </div>
+
+            {/* EMAIL */}
+
+            <div>
+              <label
+                htmlFor="profile-email"
+                className="mb-2 block text-sm font-medium text-gray-800"
+              >
+                Email
+              </label>
+
+              <input
+                id="profile-email"
+                name="email"
+                type="email"
+                value={profile.email || ""}
+                disabled
+                className="w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 outline-none"
+              />
+
+              <p className="mt-2 text-xs text-gray-400">
+                Your email address cannot be changed here.
               </p>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2">
+            {/* COLLEGE */}
 
-              {/* NAME */}
+            <div>
+              <label
+                htmlFor="profile-college"
+                className="mb-2 block text-sm font-medium text-gray-800"
+              >
+                College / University
+              </label>
 
-              <div>
-                <label
-                  htmlFor="profile-name"
-                  className="mb-2 block text-sm font-medium text-gray-800"
-                >
-                  Full name
-                </label>
-
-                <input
-                  id="profile-name"
-                  name="name"
-                  type="text"
-                  value={profile.name || ""}
-                  onChange={handleChange}
-                  placeholder="Your full name"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-1 focus:ring-[#013364]/10"
-                />
-              </div>
-
-              {/* EMAIL */}
-
-              <div>
-                <label
-                  htmlFor="profile-email"
-                  className="mb-2 block text-sm font-medium text-gray-800"
-                >
-                  Email
-                </label>
-
-                <input
-                  id="profile-email"
-                  name="email"
-                  type="email"
-                  value={profile.email || ""}
-                  disabled
-                  className="w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 outline-none"
-                />
-
-                <p className="mt-2 text-xs text-gray-400">
-                  Your email address cannot be changed here.
-                </p>
-              </div>
-
-              {/* COLLEGE */}
-
-              <div>
-                <label
-                  htmlFor="profile-college"
-                  className="mb-2 block text-sm font-medium text-gray-800"
-                >
-                  College / University
-                </label>
-
-                <input
-                  id="profile-college"
-                  name="college"
-                  type="text"
-                  value={profile.college || ""}
-                  onChange={handleChange}
-                  placeholder="e.g. Delhi University"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-1 focus:ring-[#013364]/10"
-                />
-              </div>
-
-              {/* DEGREE */}
-
-              <div>
-                <label
-                  htmlFor="profile-degree"
-                  className="mb-2 block text-sm font-medium text-gray-800"
-                >
-                  Degree
-                </label>
-
-                <input
-                  id="profile-degree"
-                  name="degree"
-                  type="text"
-                  value={profile.degree || ""}
-                  onChange={handleChange}
-                  placeholder="e.g. B.Tech"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-1 focus:ring-[#013364]/10"
-                />
-              </div>
-
-              {/* BRANCH */}
-
-              <div>
-                <label
-                  htmlFor="profile-branch"
-                  className="mb-2 block text-sm font-medium text-gray-800"
-                >
-                  Branch / Specialization
-                </label>
-
-                <input
-                  id="profile-branch"
-                  name="branch"
-                  type="text"
-                  value={profile.branch || ""}
-                  onChange={handleChange}
-                  placeholder="e.g. Computer Science"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-1 focus:ring-[#013364]/10"
-                />
-              </div>
-
-              {/* GRADUATION YEAR */}
-
-              <div>
-                <label
-                  htmlFor="profile-graduation"
-                  className="mb-2 block text-sm font-medium text-gray-800"
-                >
-                  Graduation year
-                </label>
-
-                <input
-                  id="profile-graduation"
-                  name="graduationYear"
-                  type="number"
-                  value={profile.graduationYear || ""}
-                  onChange={handleChange}
-                  placeholder="e.g. 2027"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-1 focus:ring-[#013364]/10"
-                />
-              </div>
+              <input
+                id="profile-college"
+                name="college"
+                type="text"
+                value={profile.college || ""}
+                onChange={handleChange}
+                placeholder="e.g. Delhi University"
+                className={inputClassName}
+              />
             </div>
-          </section>
 
-          {/* CAREER PREFERENCES */}
+            {/* DEGREE */}
 
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-7">
+            <div>
+              <label
+                htmlFor="profile-degree"
+                className="mb-2 block text-sm font-medium text-gray-800"
+              >
+                Degree
+              </label>
 
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold tracking-tight text-gray-950">
+              <input
+                id="profile-degree"
+                name="degree"
+                type="text"
+                value={profile.degree || ""}
+                onChange={handleChange}
+                placeholder="e.g. B.Tech"
+                className={inputClassName}
+              />
+            </div>
+
+            {/* BRANCH */}
+
+            <div>
+              <label
+                htmlFor="profile-branch"
+                className="mb-2 block text-sm font-medium text-gray-800"
+              >
+                Branch / Specialization
+              </label>
+
+              <input
+                id="profile-branch"
+                name="branch"
+                type="text"
+                value={profile.branch || ""}
+                onChange={handleChange}
+                placeholder="e.g. Computer Science"
+                className={inputClassName}
+              />
+            </div>
+
+            {/* GRADUATION YEAR */}
+
+            <div>
+              <label
+                htmlFor="profile-graduation"
+                className="mb-2 block text-sm font-medium text-gray-800"
+              >
+                Graduation year
+              </label>
+
+              <input
+                id="profile-graduation"
+                name="graduationYear"
+                type="number"
+                value={profile.graduationYear || ""}
+                onChange={handleChange}
+                placeholder="e.g. 2027"
+                className={inputClassName}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* CAREER PREFERENCES */}
+
+        <section className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-7">
+          <div className="mb-6 flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#013364]/6 text-[#013364]">
+              <GraduationCap size={18} strokeWidth={1.8} />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight text-gray-950">
                 Career preferences
               </h2>
 
               <p className="mt-1 text-sm text-gray-500">
-                Tell InterviewIQ what kind of opportunities you are preparing
-                for.
+                Tell InterviewIQ what opportunities you are preparing for.
               </p>
             </div>
-
-            <div className="grid gap-5 md:grid-cols-2">
-
-              {/* TARGET COMPANY */}
-
-              <div>
-                <label
-                  htmlFor="profile-company"
-                  className="mb-2 block text-sm font-medium text-gray-800"
-                >
-                  Target company
-                </label>
-
-                <input
-                  id="profile-company"
-                  name="targetCompany"
-                  type="text"
-                  value={profile.targetCompany || ""}
-                  onChange={handleChange}
-                  placeholder="e.g. Google, Microsoft, Amazon"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-1 focus:ring-[#013364]/10"
-                />
-              </div>
-
-              {/* TARGET ROLE */}
-
-              <div>
-                <label
-                  htmlFor="profile-role"
-                  className="mb-2 block text-sm font-medium text-gray-800"
-                >
-                  Target role
-                </label>
-
-                <input
-                  id="profile-role"
-                  name="targetRole"
-                  type="text"
-                  value={profile.targetRole || ""}
-                  onChange={handleChange}
-                  placeholder="e.g. Software Engineer"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-1 focus:ring-[#013364]/10"
-                />
-              </div>
-
-              {/* SKILLS */}
-
-              <div className="md:col-span-2">
-                <label
-                  htmlFor="profile-skills"
-                  className="mb-2 block text-sm font-medium text-gray-800"
-                >
-                  Skills
-                </label>
-
-                <input
-                  id="profile-skills"
-                  name="skills"
-                  type="text"
-                  value={(profile.skills || []).join(", ")}
-                  onChange={handleSkillsChange}
-                  placeholder="e.g. React, Node.js, MongoDB, Java"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-1 focus:ring-[#013364]/10"
-                />
-
-                <p className="mt-2 text-xs text-gray-400">
-                  Separate skills with commas.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* SAVE */}
-
-          <div className="flex justify-end pb-4">
-            <button
-              type="submit"
-              disabled={saving}
-              className="rounded-lg bg-[#013364] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#081f38] disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {saving ? "Saving..." : "Save Changes"}
-            </button>
           </div>
 
-        </form>
-      </div>
+          <div className="grid gap-5 md:grid-cols-2">
+            {/* COMPANY */}
+
+            <div>
+              <label
+                htmlFor="profile-company"
+                className="mb-2 block text-sm font-medium text-gray-800"
+              >
+                Target company
+              </label>
+
+              <input
+                id="profile-company"
+                name="targetCompany"
+                type="text"
+                value={profile.targetCompany || ""}
+                onChange={handleChange}
+                placeholder="e.g. Google, Microsoft, Amazon"
+                className={inputClassName}
+              />
+            </div>
+
+            {/* ROLE */}
+
+            <div>
+              <label
+                htmlFor="profile-role"
+                className="mb-2 block text-sm font-medium text-gray-800"
+              >
+                Target role
+              </label>
+
+              <input
+                id="profile-role"
+                name="targetRole"
+                type="text"
+                value={profile.targetRole || ""}
+                onChange={handleChange}
+                placeholder="e.g. Software Engineer"
+                className={inputClassName}
+              />
+            </div>
+
+            {/* SKILLS */}
+
+            <div className="md:col-span-2">
+              <label
+                htmlFor="profile-skills"
+                className="mb-2 block text-sm font-medium text-gray-800"
+              >
+                Skills
+              </label>
+
+              <input
+                id="profile-skills"
+                name="skills"
+                type="text"
+                value={profile.skills || ""}
+                onChange={handleSkillsChange}
+                placeholder="e.g. React, Node.js, MongoDB, Java"
+                className={inputClassName}
+              />
+
+              <p className="mt-2 text-xs text-gray-400">
+                Separate skills with commas.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* SAVE */}
+
+        <div className="flex flex-col-reverse gap-3 pb-4 sm:flex-row sm:items-center sm:justify-end">
+          <button
+            type="submit"
+            disabled={saving}
+            className="inline-flex items-center justify-center rounded-lg bg-[#013364] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#081f38] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Save size={16} className="mr-2" />
+
+            {saving ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

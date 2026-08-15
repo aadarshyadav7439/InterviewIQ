@@ -53,3 +53,17 @@ export const uploadResume = async (req, res) => {
     });
   }
 };
+
+
+export const getResume = async (req,res) =>{
+  try {
+    const resume = await Resume.findOne({userId: req.userId}).sort({createdAt: -1});
+
+    if(!resume) return res.status(404).json({message: "No Resume found"});
+
+    return res.status(200).json({resume,});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message: error.message});
+  }
+}
