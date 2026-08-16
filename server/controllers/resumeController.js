@@ -34,12 +34,32 @@ export const uploadResume = async (req, res) => {
     await parser.destroy();
 
     //db me resume ko save
-    const resume = await Resume.create({
+    const existingResume = await Resume.findOne({
       userId: req.userId,
-      fileName: req.file.originalname,
-      fileUrl: result.secure_url,
-      extractedText: pdfResult.text,
     });
+
+    let resume;
+
+    if (existingResume) {
+      resume = await Resume.findOneAndUpdate(
+        { userId: req.userId },
+        {
+          fileName: req.file.originalname,
+          fileUrl: result.secure_url,
+          extractedText: pdfResult.text,
+        },
+        {
+          new: true,
+        },
+      );
+    } else {
+      resume = await Resume.create({
+        userId: req.userId,
+        fileName: req.file.originalname,
+        fileUrl: result.secure_url,
+        extractedText: pdfResult.text,
+      });
+    }
 
     res.status(201).json({
       message: "Resume uploaded successfully",
