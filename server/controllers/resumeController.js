@@ -20,7 +20,7 @@ export const uploadResume = async (req, res) => {
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
-        }
+        },
       );
 
       uploadStream.end(req.file.buffer);
@@ -102,19 +102,31 @@ export const uploadResume = async (req, res) => {
   }
 };
 
-
-export const getResume = async (req,res) =>{
+export const getResume = async (req, res) => {
   try {
-    const resume = await Resume.findOne({userId: req.userId}).sort({createdAt: -1});
+    const resume = await Resume.findOne({
+      userId: req.userId,
+    }).sort({ createdAt: -1 });
 
-    if(!resume) return res.status(404).json({message: "No Resume found"});
+    if (!resume) {
+      return res.status(404).json({
+        message: "No Resume found",
+      });
+    }
 
-    return res.status(200).json({resume,});
+    console.log("RESUME ANALYSIS FROM DB:", resume.analysis);
+
+    return res.status(200).json({
+      resume,
+    });
   } catch (error) {
-    console.error("get resume erroe ", error);
-    return res.status(500).json({message: error.message});
+    console.error("Get resume error:", error);
+
+    return res.status(500).json({
+      message: error.message,
+    });
   }
-}
+};
 
 export const analyzeUserResume = async (req, res) => {
   try {
@@ -146,7 +158,6 @@ export const analyzeUserResume = async (req, res) => {
       message: "Resume analyzed successfully",
       analysis: resume.analysis,
     });
-
   } catch (error) {
     console.error("Analyze resume error:", error);
     return res.status(500).json({
