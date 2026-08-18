@@ -56,7 +56,11 @@ const interviewSchema = new mongoose.Schema(
       enum: ["Easy", "Medium", "Hard"],
       required: true,
     },
-
+    questionCount: {
+      type: Number,
+      enum: [10, 20, 30, 40, 50],
+      default: 10,
+    },
     status: {
       type: String,
       enum: ["created", "in-progress", "completed"],

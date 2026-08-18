@@ -12,6 +12,7 @@ function Interview() {
   const [company, setCompany] = useState("");
   const [interviewType, setInterviewType] = useState("Technical");
   const [difficulty, setDifficulty] = useState("Medium");
+  const [questionCount, setQuestionCount] = useState(10);
 
   const [loading, setLoading] = useState(false);
   const [fetchingInterviews, setFetchingInterviews] = useState(true);
@@ -50,6 +51,7 @@ function Interview() {
         company: company.trim(),
         interviewType,
         difficulty,
+        questionCount,
       });
 
       const createdInterview = data.interview;
@@ -61,9 +63,7 @@ function Interview() {
 
       setError("Interview was created, but the interview ID was not returned.");
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Unable to create interview.",
-      );
+      setError(err.response?.data?.message || "Unable to create interview.");
     } finally {
       setLoading(false);
     }
@@ -121,7 +121,6 @@ function Interview() {
               className="mb-2 block text-sm font-medium text-gray-800"
             >
               Company
-
               <span className="ml-1 text-xs font-normal text-gray-400">
                 Optional
               </span>
@@ -184,6 +183,37 @@ function Interview() {
               </select>
             </div>
           </div>
+          {/* no of questions */}
+          <div>
+            <label className="mb-3 block text-sm font-medium text-gray-800">
+              Number of Questions
+            </label>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+              {[10, 20, 30, 40, 50].map((count) => {
+                const selected = questionCount === count;
+
+                return (
+                  <button
+                    key={count}
+                    type="button"
+                    onClick={() => setQuestionCount(count)}
+                    className={`rounded-xl border px-3 py-4 text-center transition ${
+                      selected
+                        ? "border-[#013364] bg-[#013364]/5 text-[#013364] ring-2 ring-[#013364]/10"
+                        : "border-gray-200 bg-white text-gray-700 hover:border-[#013364]/30 hover:bg-gray-50"
+                    }`}
+                  >
+                    <span className="block text-lg font-semibold">{count}</span>
+
+                    <span className="mt-1 block text-xs text-gray-500">
+                      Questions
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
           {/* ERROR */}
 
@@ -238,9 +268,7 @@ function Interview() {
               <button
                 key={interview._id}
                 type="button"
-                onClick={() =>
-                  navigate(`/interviews/${interview._id}`)
-                }
+                onClick={() => navigate(`/interviews/${interview._id}`)}
                 className="w-full rounded-xl border border-gray-200 bg-white p-5 text-left transition hover:border-[#013364]/30 hover:shadow-sm"
               >
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -251,7 +279,8 @@ function Interview() {
 
                     <p className="mt-1 text-xs text-gray-500">
                       {interview.company || "General interview"} •{" "}
-                      {interview.interviewType} • {interview.difficulty}
+                      {interview.interviewType} • {interview.difficulty} •{" "}
+                      {interview.questionCount} questions
                     </p>
                   </div>
 

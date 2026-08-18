@@ -5,7 +5,7 @@ export const getInterviews = async () => {
   return response.data;
 };
 
-export const getInterview = async () => {
+export const getInterview = async (id) => {
   const response = await api.get(`/interviews/${id}`);
   return response.data;
 };

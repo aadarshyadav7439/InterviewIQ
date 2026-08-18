@@ -47,10 +47,7 @@ function InterviewSession() {
           );
         }
       } catch (err) {
-        setError(
-          err.response?.data?.message ||
-            "Unable to load interview.",
-        );
+        setError(err.response?.data?.message || "Unable to load interview.");
       } finally {
         setLoading(false);
       }
@@ -93,10 +90,7 @@ function InterviewSession() {
         setAnswer(updatedQuestions[nextIndex].answer || "");
       }
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Unable to save your answer.",
-      );
+      setError(err.response?.data?.message || "Unable to save your answer.");
     } finally {
       setSaving(false);
     }
@@ -118,9 +112,7 @@ function InterviewSession() {
         <div className="text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-[#013364]" />
 
-          <p className="mt-4 text-sm text-gray-500">
-            Loading interview...
-          </p>
+          <p className="mt-4 text-sm text-gray-500">Loading interview...</p>
         </div>
       </div>
     );
@@ -139,9 +131,7 @@ function InterviewSession() {
   const totalQuestions = questions.length;
   const questionNumber = currentQuestion + 1;
   const progress =
-    totalQuestions > 0
-      ? (questionNumber / totalQuestions) * 100
-      : 0;
+    totalQuestions > 0 ? (questionNumber / totalQuestions) * 100 : 0;
 
   return (
     <main className="mx-auto max-w-4xl p-6">
@@ -159,9 +149,8 @@ function InterviewSession() {
             </h1>
 
             <p className="mt-1 text-sm text-gray-500">
-              {interview.company || "General interview"}{" "}
-              • {interview.interviewType} •{" "}
-              {interview.difficulty}
+              {interview.company || "General interview"} •{" "}
+              {interview.interviewType} • {interview.difficulty}
             </p>
           </div>
 

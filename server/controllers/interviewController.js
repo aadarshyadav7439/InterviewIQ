@@ -34,6 +34,7 @@ export const createInterview = async (req,res)=>{
             targetRole,
             interviewType,
             difficulty,
+            questionCount,
         } = req.body;
 
         const interview = await Interview.create({
@@ -42,6 +43,7 @@ export const createInterview = async (req,res)=>{
             targetRole,
             interviewType,
             difficulty,
+            questionCount: Number(questionCount) || 10,
             status: "created",
             questions: [],
         });
@@ -68,6 +70,7 @@ export const updateInterview = async(req,res)=>{
             targetRole,
             interviewType,
             difficulty,
+            questionCount,
             status,
             questions,
             overallScore,
@@ -78,6 +81,7 @@ export const updateInterview = async(req,res)=>{
         if(targetRole!==undefined) {interview.targetRole = targetRole}
         if(interviewType!==undefined) {interview.interviewType = interviewType}
         if(difficulty!==undefined) {interview.difficulty = difficulty}
+        if(questionCount!==undefined) {interview.questionCount = questionCount}
         if(status!==undefined) {interview.status = status}
         if(questions!==undefined) {interview.questions = questions}
         if(overallScore!==undefined) {interview.overallScore = overallScore}
