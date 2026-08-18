@@ -6,8 +6,13 @@ const resumeSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      unique: true,
     },
     fileUrl: {
+      type: String,
+      required: true,
+    },
+    cloudinaryPublicId: {
       type: String,
       required: true,
     },

@@ -10,7 +10,8 @@ export const uploadResume = async (req, res) => {
         message: "Please upload a resume",
       });
     }
-    //cloudinary pe upload
+
+    // Upload the new resume to Cloudinary first
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
@@ -26,7 +27,7 @@ export const uploadResume = async (req, res) => {
       uploadStream.end(req.file.buffer);
     });
 
-    //resume pdf ki parsing
+    // Parse the new PDF
     const parser = new PDFParse({
       data: req.file.buffer,
     });
@@ -34,59 +35,80 @@ export const uploadResume = async (req, res) => {
     const pdfResult = await parser.getText();
     await parser.destroy();
 
-    //agar blank pdf hui toh
+    // If parsing fails, delete the newly uploaded Cloudinary file
     if (!pdfResult.text?.trim()) {
+      try {
+        await cloudinary.uploader.destroy(result.public_id, {
+          resource_type: "raw",
+        });
+      } catch (cloudinaryError) {
+        console.error(
+          "Failed to clean up new Cloudinary resume:",
+          cloudinaryError,
+        );
+      }
+
       return res.status(400).json({
         message: "Could not extract text from this PDF.",
       });
     }
-    //db me resume ko save
+
+    // Find the user's current resume
     const existingResume = await Resume.findOne({
       userId: req.userId,
     });
 
-    let resume;
-
+    // If a resume already exists, delete the old one
     if (existingResume) {
-      // Replace existing resume
-      resume = await Resume.findOneAndUpdate(
-        { userId: req.userId },
-        {
-          fileName: req.file.originalname,
-          fileType: req.file.mimetype,
-          fileUrl: result.secure_url,
-          extractedText: pdfResult.text,
-          // New resume means old AI analysis is no longer valid.
-          analysis: {
-            overallScore: null,
-            summary: "",
-            skills: [],
-            projects: [],
-            education: [],
-            experience: [],
-            certifications: [],
-            achievements: [],
-            missingKeywords: [],
-            strengths: [],
-            weaknesses: [],
-            suggestions: [],
-            analyzedAt: null,
-          },
-        },
-        {
-          returnDocument: "after",
-        },
-      );
-    } else {
-      // First resume
-      resume = await Resume.create({
-        userId: req.userId,
-        fileName: req.file.originalname,
-        fileType: req.file.mimetype,
-        fileUrl: result.secure_url,
-        extractedText: pdfResult.text,
+      // Delete old file from Cloudinary
+      if (existingResume.cloudinaryPublicId) {
+        try {
+          await cloudinary.uploader.destroy(
+            existingResume.cloudinaryPublicId,
+            {
+              resource_type: "raw",
+            },
+          );
+        } catch (cloudinaryError) {
+          console.error(
+            "Failed to delete old Cloudinary resume:",
+            cloudinaryError,
+          );
+        }
+      }
+
+      // Delete old resume document from MongoDB
+      await Resume.deleteOne({
+        _id: existingResume._id,
       });
     }
+
+    // Create the new resume document
+    const resume = await Resume.create({
+      userId: req.userId,
+      fileUrl: result.secure_url,
+      cloudinaryPublicId: result.public_id,
+      fileName: req.file.originalname,
+      fileType: req.file.mimetype,
+      extractedText: pdfResult.text,
+
+      // New resume starts without AI analysis
+      analysis: {
+        overallScore: null,
+        summary: "",
+        skills: [],
+        projects: [],
+        education: [],
+        experience: [],
+        certifications: [],
+        achievements: [],
+        missingKeywords: [],
+        strengths: [],
+        weaknesses: [],
+        suggestions: [],
+        analyzedAt: null,
+      },
+    });
 
     return res.status(201).json({
       message: existingResume
@@ -95,8 +117,9 @@ export const uploadResume = async (req, res) => {
       resume,
     });
   } catch (error) {
-    console.error("upload rsume error", error);
-    res.status(500).json({
+    console.error("Upload resume error:", error);
+
+    return res.status(500).json({
       message: error.message,
     });
   }
@@ -106,15 +129,13 @@ export const getResume = async (req, res) => {
   try {
     const resume = await Resume.findOne({
       userId: req.userId,
-    }).sort({ createdAt: -1 });
+    });
 
     if (!resume) {
       return res.status(404).json({
         message: "No Resume found",
       });
     }
-
-    console.log("RESUME ANALYSIS FROM DB:", resume.analysis);
 
     return res.status(200).json({
       resume,
@@ -146,20 +167,43 @@ export const analyzeUserResume = async (req, res) => {
       });
     }
 
+    // Send extracted resume text to Gemini
     const analysis = await analyzeResume(resume.extractedText);
-    resume.analysis = {
-      ...analysis,
-      analyzedAt: new Date(),
-    };
 
-    await resume.save();
+    // Save Gemini analysis to MongoDB
+    const updatedResume = await Resume.findOneAndUpdate(
+      {
+        userId: req.userId,
+      },
+      {
+        $set: {
+          "analysis.overallScore": analysis.overallScore,
+          "analysis.summary": analysis.summary,
+          "analysis.skills": analysis.skills,
+          "analysis.projects": analysis.projects,
+          "analysis.education": analysis.education,
+          "analysis.experience": analysis.experience,
+          "analysis.certifications": analysis.certifications,
+          "analysis.achievements": analysis.achievements,
+          "analysis.missingKeywords": analysis.missingKeywords,
+          "analysis.strengths": analysis.strengths,
+          "analysis.weaknesses": analysis.weaknesses,
+          "analysis.suggestions": analysis.suggestions,
+          "analysis.analyzedAt": new Date(),
+        },
+      },
+      {
+        returnDocument: "after",
+      },
+    );
 
     return res.status(200).json({
       message: "Resume analyzed successfully",
-      analysis: resume.analysis,
+      analysis: updatedResume.analysis,
     });
   } catch (error) {
     console.error("Analyze resume error:", error);
+
     return res.status(500).json({
       message: error.message,
     });
