@@ -15,6 +15,7 @@ import Companies from "./pages/Companies";
 import Community from "./pages/Community";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import InterviewSession from "./pages/InterviewSession";
 import Navbar from "./components/Navbar";
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
           {/* Interview page */}
           <Route element={ <ProtectedRoute> <InterviewLayout /> </ProtectedRoute> }>
             <Route path="/interview" element={<Interview />} />
+            <Route path="/interviews/:id" element={<InterviewSession />} />
           </Route>
         </Routes>
       </BrowserRouter>
