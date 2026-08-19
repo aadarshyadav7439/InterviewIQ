@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import express from "express";
 
 import connectDB from "./config/db.js";
@@ -8,7 +8,6 @@ import interviewRoutes from "./routes/interviewRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import cors from "cors";
 
-dotenv.config();
 
 const app = express();
 app.use(cors({

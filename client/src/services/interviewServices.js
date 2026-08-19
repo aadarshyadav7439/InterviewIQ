@@ -14,7 +14,15 @@ export const createInterview = async (interviewData) => {
   return response.data;
 };
 
-// Update interview
+export const evaluateInterviewAnswer = async (id,questionId,answer) => {
+  const response = await api.post(`/interviews/${id}/evaluate-answer`,{questionId, answer});
+  return response.data;
+};
+
+export const generateInterviewQuestions = async(id) => {
+  const response = await api.post(`/interviews/${id}/generate-questions`);
+  return response.data;
+};
 
 export const updateInterview = async (id, interviewData) => {
   const response = await api.put(`/interviews/${id}`,interviewData);
@@ -22,6 +30,6 @@ export const updateInterview = async (id, interviewData) => {
 };
 
 export const completeInterview = async (id) => {
-  const response = await api.put(`/interviews/${id}/complete`);
+  const response = await api.post(`/interviews/${id}/complete`);
   return response.data;
 };

@@ -3,15 +3,10 @@ import { useParams } from "react-router-dom";
 import {
   getInterview,
   updateInterview,
+  generateInterviewQuestions,
+  evaluateInterviewAnswer,
+  completeInterview,
 } from "../services/interviewServices.js";
-
-const dummyQuestions = [
-  "Tell me about yourself and your experience.",
-  "Explain the difference between REST and SOAP APIs.",
-  "What is the difference between let, const, and var in JavaScript?",
-  "Explain how authentication using JWT works.",
-  "Tell me about a challenging technical problem you solved.",
-];
 
 function InterviewSession() {
   const { id } = useParams();
@@ -22,33 +17,55 @@ function InterviewSession() {
   const [answer, setAnswer] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchInterview = async () => {
       try {
+        setLoading(true);
+        setError("");
+
         const data = await getInterview(id);
 
-        setInterview(data.interview);
+        const loadedInterview = data.interview;
 
-        const existingQuestions = data.interview.questions || [];
+        setInterview(loadedInterview);
 
+        const existingQuestions = loadedInterview.questions || [];
+
+        // Questions already exist in MongoDB
         if (existingQuestions.length > 0) {
           setQuestions(existingQuestions);
-        } else {
-          setQuestions(
-            dummyQuestions.map((question) => ({
-              question,
-              answer: "",
-              score: null,
-              feedback: "",
-            })),
-          );
+          setCurrentQuestion(0);
+          setAnswer(existingQuestions[0]?.answer || "");
+
+          return;
         }
+
+        // No questions → generate them using Gemini
+        setGenerating(true);
+
+        const generatedData = await generateInterviewQuestions(id);
+
+        const generatedQuestions = generatedData.questions || [];
+
+        setQuestions(generatedQuestions);
+
+        setInterview(generatedData.interview || loadedInterview);
+
+        setCurrentQuestion(0);
+
+        setAnswer(generatedQuestions[0]?.answer || "");
       } catch (err) {
+        console.error("interview session error:", err);
+        console.error("response:", err.response?.data);
+        console.error("STATUS:", err.response?.status);
+
         setError(err.response?.data?.message || "Unable to load interview.");
       } finally {
+        setGenerating(false);
         setLoading(false);
       }
     };
@@ -66,31 +83,50 @@ function InterviewSession() {
     setSaving(true);
 
     try {
+      const currentQuestionData = questions[currentQuestion];
+
+      // Step 1: Send answer to Gemini for evaluation
+      const evaluationData = await evaluateInterviewAnswer(
+        id,
+        currentQuestionData._id,
+        answer.trim(),
+      );
+
+      // Step 2: Update the current question locally
       const updatedQuestions = [...questions];
 
       updatedQuestions[currentQuestion] = {
         ...updatedQuestions[currentQuestion],
         answer: answer.trim(),
+        score: evaluationData.question.score,
+        feedback: evaluationData.question.feedback,
       };
 
-      await updateInterview(id, {
-        questions: updatedQuestions,
-        status:
-          currentQuestion === questions.length - 1
-            ? "completed"
-            : "in-progress",
-      });
-
+      // Step 3: Update interview state
       setQuestions(updatedQuestions);
 
-      if (currentQuestion < questions.length - 1) {
-        const nextIndex = currentQuestion + 1;
+      // Step 4: Check if this is the last question
+      const isLastQuestion = currentQuestion === questions.length - 1;
 
-        setCurrentQuestion(nextIndex);
-        setAnswer(updatedQuestions[nextIndex].answer || "");
+      if (isLastQuestion) {
+        const completedData = await completeInterview(id);
+        setInterview(completedData.interview);
+        return;
       }
+
+      // Step 5: Move to next question
+      const nextIndex = currentQuestion + 1;
+
+      setCurrentQuestion(nextIndex);
+
+      setAnswer(updatedQuestions[nextIndex]?.answer || "");
     } catch (err) {
-      setError(err.response?.data?.message || "Unable to save your answer.");
+      console.error("ANSWER EVALUATION ERROR:", err);
+      console.error("RESPONSE:", err.response?.data);
+
+      setError(
+        err.response?.data?.message || "Unable to evaluate your answer.",
+      );
     } finally {
       setSaving(false);
     }
@@ -111,8 +147,11 @@ function InterviewSession() {
       <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-[#013364]" />
-
-          <p className="mt-4 text-sm text-gray-500">Loading interview...</p>
+          <p className="mt-4 text-sm text-gray-500">
+            {generating
+              ? "Preparing your personalized interview..."
+              : "Loading interview..."}
+          </p>{" "}
         </div>
       </div>
     );
