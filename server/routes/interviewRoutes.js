@@ -16,7 +16,7 @@ router.get("/:id", protect, getInterview);
 router.post("/", protect, createInterview);
 router.post("/:id/generate-questions", protect, generateQuestions);
 router.post("/:id/evaluate-answer", protect, evaluateAnswer);
+router.post("/:id/complete", protect, completeInterview);
 router.put("/:id", protect, updateInterview);
-router.put("/:id/complete", protect, completeInterview);
 
 export default router;

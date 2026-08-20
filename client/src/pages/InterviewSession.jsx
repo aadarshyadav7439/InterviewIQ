@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   getInterview,
   updateInterview,
@@ -10,6 +10,7 @@ import {
 
 function InterviewSession() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [interview, setInterview] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -109,16 +110,14 @@ function InterviewSession() {
       const isLastQuestion = currentQuestion === questions.length - 1;
 
       if (isLastQuestion) {
-        const completedData = await completeInterview(id);
-        setInterview(completedData.interview);
+        await completeInterview(id);
+        navigate(`/interviews/${id}/report`);
         return;
       }
 
       // Step 5: Move to next question
       const nextIndex = currentQuestion + 1;
-
       setCurrentQuestion(nextIndex);
-
       setAnswer(updatedQuestions[nextIndex]?.answer || "");
     } catch (err) {
       console.error("ANSWER EVALUATION ERROR:", err);

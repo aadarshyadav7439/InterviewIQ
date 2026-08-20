@@ -268,7 +268,11 @@ function Interview() {
               <button
                 key={interview._id}
                 type="button"
-                onClick={() => navigate(`/interviews/${interview._id}`)}
+                onClick={() =>
+                  interview.status === "completed"
+                    ? navigate(`/interviews/${interview._id}/report`)
+                    : navigate(`/interviews/${interview._id}`)
+                }
                 className="w-full rounded-xl border border-gray-200 bg-white p-5 text-left transition hover:border-[#013364]/30 hover:shadow-sm"
               >
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -284,9 +288,27 @@ function Interview() {
                     </p>
                   </div>
 
-                  <span className="w-fit rounded-full bg-gray-100 px-3 py-1 text-xs font-medium capitalize text-gray-600">
-                    {interview.status}
-                  </span>
+                  <div className="flex flex-col items-start gap-2 sm:items-end">
+                    <span
+                      className={`w-fit rounded-full px-3 py-1 text-xs font-medium capitalize ${
+                        interview.status === "completed"
+                          ? "bg-green-50 text-green-700"
+                          : interview.status === "in-progress"
+                            ? "bg-blue-50 text-blue-700"
+                            : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      {interview.status}
+                    </span>
+
+                    <p className="text-xs font-medium text-[#013364]">
+                      {interview.status === "completed"
+                        ? "View Report →"
+                        : interview.status === "in-progress"
+                          ? "Continue Interview →"
+                          : "Start Interview →"}
+                    </p>
+                  </div>
                 </div>
               </button>
             ))}

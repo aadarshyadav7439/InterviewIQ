@@ -17,6 +17,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import InterviewSession from "./pages/InterviewSession";
 import Navbar from "./components/Navbar";
+import InterviewReport from "./pages/InterviewReport";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route element={ <ProtectedRoute> <InterviewLayout /> </ProtectedRoute> }>
             <Route path="/interview" element={<Interview />} />
             <Route path="/interviews/:id" element={<InterviewSession />} />
+            <Route path="/interviews/:id/report" element={<InterviewReport />}/>
           </Route>
         </Routes>
       </BrowserRouter>
