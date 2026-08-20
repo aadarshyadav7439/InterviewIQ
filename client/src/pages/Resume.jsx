@@ -357,7 +357,7 @@ function Resume() {
       {/* AI ANALYSIS */}
 
       {analysis && analysis.overallScore !== null && (
-        <section className="mt-6 rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
+        <section className="mt-6 rounded-2xl border border-gray-500 bg-[#f8fafc] p-6 sm:p-8">
           {/* HEADER */}
 
           <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
@@ -377,12 +377,12 @@ function Resume() {
 
             {/* SCORE */}
 
-            <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full border-4 border-[#013364]/10">
-              <span className="text-2xl font-bold text-[#013364]">
+            <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full border-4 border-[#013364]/30">
+              <span className="text-2xl font-bold text-blue-900">
                 {analysis.overallScore}
               </span>
 
-              <span className="text-[10px] font-medium uppercase text-gray-400">
+              <span className="text-[10px] font-medium uppercase text-gray-600">
                 / 100
               </span>
             </div>
@@ -480,6 +480,112 @@ function Resume() {
                   >
                     {keyword}
                   </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* PROJECTS */}
+
+          {analysis.projects?.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-sm font-semibold text-gray-900">Projects</h3>
+
+              <div className="mt-3 space-y-3">
+                {analysis.projects.map((project, index) => (
+                  <div
+                    key={`${project}-${index}`}
+                    className="rounded-lg border border-gray-200 bg-gray-50 p-4"
+                  >
+                    <p className="text-sm leading-6 text-gray-600">{project}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* EDUCATION */}
+
+          {analysis.education?.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-sm font-semibold text-gray-900">Education</h3>
+
+              <div className="mt-3 space-y-3">
+                {analysis.education.map((item, index) => (
+                  <div
+                    key={`${item}-${index}`}
+                    className="rounded-lg border border-gray-200 bg-gray-50 p-4"
+                  >
+                    <p className="text-sm leading-6 text-gray-600">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* EXPERIENCE */}
+
+          {analysis.experience?.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-sm font-semibold text-gray-900">
+                Experience
+              </h3>
+
+              <div className="mt-3 space-y-3">
+                {analysis.experience.map((item, index) => (
+                  <div
+                    key={`${item}-${index}`}
+                    className="rounded-lg border border-gray-200 bg-gray-50 p-4"
+                  >
+                    <p className="text-sm leading-6 text-gray-600">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* CERTIFICATIONS */}
+
+          {analysis.certifications?.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-sm font-semibold text-gray-900">
+                Certifications
+              </h3>
+
+              <div className="mt-3 flex flex-wrap gap-2">
+                {analysis.certifications.map((item, index) => (
+                  <span
+                    key={`${item}-${index}`}
+                    className="rounded-full border border-[#013364]/15 bg-[#013364]/[0.03] px-3 py-1.5 text-xs font-medium text-[#013364]"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ACHIEVEMENTS */}
+
+          {analysis.achievements?.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-sm font-semibold text-gray-900">
+                Achievements
+              </h3>
+
+              <div className="mt-3 space-y-3">
+                {analysis.achievements.map((item, index) => (
+                  <div
+                    key={`${item}-${index}`}
+                    className="flex items-start gap-3 rounded-lg border border-gray-200 bg-white p-4"
+                  >
+                    <CheckCircle2
+                      size={17}
+                      className="mt-0.5 shrink-0 text-[#013364]"
+                    />
+
+                    <p className="text-sm leading-6 text-gray-600">{item}</p>
+                  </div>
                 ))}
               </div>
             </div>
