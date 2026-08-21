@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import interviewRoutes from "./routes/interviewRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
+import companyRoutes from "./routes/companyRoutes.js";
 import cors from "cors";
 
 
@@ -19,6 +20,7 @@ app.use("/api/auth",authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/interviews", interviewRoutes);
 app.use("/api/resume", resumeRoutes);
+app.use("/api/companies", companyRoutes);
 
 connectDB();
 const PORT = process.env.PORT || 8000; 

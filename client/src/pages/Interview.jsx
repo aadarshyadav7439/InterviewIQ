@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation ,useNavigate } from "react-router-dom";
 import {
   createInterview,
   getInterviews,
@@ -7,9 +7,10 @@ import {
 
 function Interview() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [targetRole, setTargetRole] = useState("");
-  const [company, setCompany] = useState("");
+  const [targetRole, setTargetRole] = useState(location.state?.targetRole || "");
+  const [company, setCompany] = useState(location.state?.company || "");
   const [interviewType, setInterviewType] = useState("Technical");
   const [difficulty, setDifficulty] = useState("Medium");
   const [questionCount, setQuestionCount] = useState(10);

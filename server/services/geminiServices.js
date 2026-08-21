@@ -443,3 +443,65 @@ Return only the requested JSON structure.
   return result;
 };
 
+export const generateCompanyPreparation = async (companyName,targetRole) => {
+  try {
+    const prompt = `
+You are an expert technical interview preparation coach.
+
+Create a company-specific interview preparation guide for:
+
+Company: ${companyName}
+Target Role: ${targetRole}
+
+Return ONLY valid JSON. Do not use markdown or code fences.
+
+Use exactly this structure:
+
+{
+  "overview": "A concise overview of what the candidate should focus on for this company's interview process and this role.",
+  "importantTopics": [
+    "topic 1",
+    "topic 2",
+    "topic 3",
+    "topic 4",
+    "topic 5"
+  ],
+  "importantSkills": [
+    "skill 1",
+    "skill 2",
+    "skill 3",
+    "skill 4",
+    "skill 5"
+  ],
+  "likelyQuestions": [
+    "question 1",
+    "question 2",
+    "question 3",
+    "question 4",
+    "question 5"
+  ],
+  "preparationTips": [
+    "tip 1",
+    "tip 2",
+    "tip 3",
+    "tip 4",
+    "tip 5"
+  ]
+}
+`;
+
+    const response = await ai.models.generateContent({
+      model: process.env.GEMINI_MODEL,
+      contents: prompt,
+    });
+
+    const text = response.text;
+
+    const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+
+    return JSON.parse(cleanedText);
+  } catch (error) {
+    console.error("Gemini company preparation error:", error);
+    throw error;
+  }
+};
