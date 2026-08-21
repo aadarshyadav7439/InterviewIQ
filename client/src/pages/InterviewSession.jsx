@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect,useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Volume2, VolumeX } from "lucide-react";
 import {
   getInterview,
   updateInterview,
@@ -21,6 +22,13 @@ function InterviewSession() {
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  const recognitionRef = useRef(null);
+
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(true);
+
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
     const fetchInterview = async () => {
@@ -73,6 +81,56 @@ function InterviewSession() {
 
     fetchInterview();
   }, [id]);
+  //voice recognition
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setSpeechSupported(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    recognition.onresult = (event) => {
+      let transcript = "";
+
+      for (let i = 0; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+      }
+
+      setAnswer(transcript);
+    };
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setError("");
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+
+      setIsListening(false);
+      //mic permission error
+      if (event.error === "not-allowed") {
+        setError("Microphone permission was denied.");
+      }
+    };
+
+    recognitionRef.current = recognition;
+
+    return () => {
+      recognition.stop();
+    };
+  }, []);
 
   const handleNext = async () => {
     if (!answer.trim()) {
@@ -131,6 +189,29 @@ function InterviewSession() {
     }
   };
 
+  const handleStartListening = () => {
+    if (!speechSupported || !recognitionRef.current) {
+      setError("Speech recognition is not supported in this browser.");
+      return;
+    }
+
+    if (isListening) return;
+
+    setError("");
+
+    try {
+      recognitionRef.current.start();
+    } catch (error) {
+      console.error("Unable to start speech recognition:", error);
+    }
+  };
+
+  const handleStopListening = () => {
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+    }
+  };
+
   const handlePrevious = () => {
     if (currentQuestion === 0) return;
 
@@ -140,6 +221,48 @@ function InterviewSession() {
     setAnswer(questions[previousIndex]?.answer || "");
     setError("");
   };
+
+  const speakQuestion = (text) => {
+    if (!("speechSynthesis" in window) || !text) return;
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+    };
+
+    utterance.onend = () => {
+      setIsSpeaking(false);
+    };
+
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeaking = () => {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+  };
+  //ques chnage hote hi automatic question speak karne ke liye
+  useEffect(() => {
+    const question = questions[currentQuestion]?.question;
+
+    if (question) {
+      speakQuestion(question);
+    }
+
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, [currentQuestion, questions]);
 
   if (loading) {
     return (
@@ -232,6 +355,30 @@ function InterviewSession() {
           <h2 className="mt-3 text-xl font-semibold leading-8 text-gray-950 sm:text-2xl">
             {questions[currentQuestion]?.question}
           </h2>
+          <div className="mt-4 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() =>
+                speakQuestion(questions[currentQuestion]?.question)
+              }
+              disabled={isSpeaking}
+              className="inline-flex items-center gap-2 rounded-lg border border-[#013364]/15 bg-[#013364]/5 px-3 py-2 text-sm font-medium text-[#013364] transition hover:bg-[#013364]/10 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Volume2 size={16} />
+              {isSpeaking ? "Speaking..." : "Read question"}
+            </button>
+
+            {isSpeaking && (
+              <button
+                type="button"
+                onClick={stopSpeaking}
+                className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+              >
+                <VolumeX size={16} />
+                Stop
+              </button>
+            )}
+          </div>
         </div>
 
         {/* ANSWER */}
@@ -252,6 +399,35 @@ function InterviewSession() {
             rows={8}
             className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm leading-6 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-2 focus:ring-[#013364]/10"
           />
+          {speechSupported && (
+            <div className="mt-3 flex items-center gap-3">
+              {!isListening ? (
+                <button
+                  type="button"
+                  onClick={handleStartListening}
+                  disabled={saving}
+                  className="rounded-xl border border-[#013364]/20 bg-[#013364]/5 px-4 py-2.5 text-sm font-medium text-[#013364] transition hover:bg-[#013364]/10 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  🎤 Start speaking
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleStopListening}
+                  className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700"
+                >
+                  ⏹ Stop listening
+                </button>
+              )}
+
+              {isListening && (
+                <span className="flex items-center gap-2 text-sm text-red-600">
+                  <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+                  Listening...
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* ERROR */}

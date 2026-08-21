@@ -147,7 +147,7 @@ function Profile() {
 
       {/* PROFILE SUMMARY */}
 
-      <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-6 sm:p-7">
+      <section className="mb-6 rounded-2xl border border-green-600 bg-white p-6 sm:p-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
           {/* Avatar */}
 
@@ -158,7 +158,7 @@ function Profile() {
           {/* Identity */}
 
           <div className="min-w-0 flex-1">
-            <h2 className="truncate text-xl font-semibold tracking-tight text-gray-950">
+            <h2 className="truncate text-3xl font-semibold tracking-tight text-gray-950">
               {profile.name || "Your name"}
             </h2>
 
@@ -179,8 +179,8 @@ function Profile() {
 
           {/* Status */}
 
-          <div className="hidden rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 sm:block">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-400">
+          <div className="hidden rounded-lg border border-gray-400 bg-gray-50 px-4 py-3 sm:block">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500">
               Profile status
             </p>
 
