@@ -4,300 +4,120 @@
 
 ### Practice smarter. Prepare with purpose. Interview with confidence.
 
-**An AI-powered interview preparation platform designed to help candidates practice, improve, and perform better.**
+**An AI-powered interview preparation platform that helps candidates practice realistic interviews, receive personalized feedback, and improve with every session.**
 
 </div>
 
 ---
 
-## 🧠 What is InterviewIQ?
+## 🚀 About
 
-InterviewIQ is a full-stack AI-powered interview preparation platform built for candidates who want a more structured way to prepare for interviews.
+**InterviewIQ** is a full-stack AI-powered interview preparation platform built to make interview practice more structured and personalized.
 
-Instead of jumping between random interview questions, notes, and websites, InterviewIQ brings the preparation journey into one workspace.
-
-Choose a target company and role, practice realistic AI-generated interviews, receive personalized feedback, review your performance, manage your profile, upload your resume, and connect with other candidates through the community.
+Users can choose a target company and role, create AI-powered interviews, answer questions, receive feedback and scores, manage their profile and resume, and connect with other candidates through the community.
 
 > **Less guessing. More preparation. Better interviews.**
 
 ---
 
-# ✨ Features
+## ✨ Features
 
-## 🤖 AI-Powered Interviews
+### 🤖 AI Interviews
 
-Create personalized interview sessions based on your preparation requirements.
+- Select a **company** and **target role**
+- Choose **Technical, Behavioral, or Mixed** interviews
+- Select **Easy, Medium, or Hard** difficulty
+- Generate AI-powered interview questions
+- Receive question-wise scores and feedback
+- Get an overall interview score and final feedback
+- Track completed interview history
 
-- 🎯 Select a target company
-- 💼 Choose your target role
-- 🧩 Choose the interview type:
-  - Technical
-  - Behavioral
-  - Mixed
-- 📊 Select a difficulty level:
-  - Easy
-  - Medium
-  - Hard
-- ❓ Generate AI-powered interview questions
-- 💬 Submit answers during the interview
-- 🧠 Receive AI-generated evaluation and feedback
-- 🏆 Get question-wise scores
-- 📈 Receive an overall interview score and feedback
+### 📄 Resume Support
 
----
+- Upload PDF resumes
+- PDF validation and text extraction
+- Cloud-based resume storage
+- Resume data stored in MongoDB
 
-## 🏢 Company Preparation
+### 👤 Profile & Personalization
 
-Prepare for companies you are actually targeting.
+- Manage education, skills, and career goals
+- Set target company and role
+- Choose from custom InterviewIQ avatars
+- Avatar integration across the profile and community
 
-```text
-Choose Company
-      +
-Choose Role
-      ↓
-Start Interview
-      ↓
-Practice & Improve
-```
+### 🌍 Community
 
-InterviewIQ passes the selected company and role directly into the interview preparation flow.
+- Create and share posts
+- Like helpful posts
+- Add comments and join discussions
+- Share interview experiences with other candidates
 
 ---
 
-## 📄 Resume Management
+## 🛠️ Tech Stack
 
-Upload your resume and keep it connected to your interview preparation journey.
+**Frontend:** React, Vite, React Router, Tailwind CSS, Axios, Lucide React
 
-- 📤 PDF resume upload
-- 🔒 PDF file validation
-- 📄 Resume text extraction
-- ☁️ Cloud-based file storage
-- 🍃 Resume metadata stored in MongoDB
+**Backend:** Node.js, Express.js, MongoDB, Mongoose, JWT, Multer
+
+**AI & Cloud:** Google Gemini, Cloudinary, MongoDB Atlas
+
+---
+
+## 🧱 Architecture
 
 ```text
-Your Resume
-     ↓
-PDF Upload
-     ↓
-Validation
-     ↓
-Text Extraction
-     ↓
-Cloud Storage
-     ↓
-Ready for Preparation
+User
+  │
+  ▼
+React + Vite Frontend
+  │
+  │ REST API
+  ▼
+Express.js Backend
+  ├── MongoDB Atlas
+  ├── Google Gemini AI
+  └── Cloudinary
 ```
 
 ---
 
-## 📊 Performance & Feedback
+## 🚀 Getting Started
 
-Every interview gives you actionable feedback.
-
-Track:
-
-- Individual question scores
-- Question-wise feedback
-- Overall interview score
-- Final interview feedback
-- Completed interview history
-- Areas for improvement
-
-Because preparation should continue even after the interview session ends.
-
----
-
-## 👤 Personal Profile
-
-Make your InterviewIQ workspace your own.
-
-Manage:
-
-- Name
-- Education
-- College
-- Degree
-- Branch
-- Graduation year
-- Skills
-- Target company
-- Target role
-
-### 🎨 Custom Avatars
-
-Users can select from custom InterviewIQ avatars.
-
-Your selected avatar appears across the platform, including:
-
-- Profile
-- Navigation
-- Community posts
-- Community comments
-
----
-
-## 🌍 Community
-
-Interview preparation is better when people share what they learn.
-
-The InterviewIQ Community allows users to:
-
-- 📝 Create posts
-- 💡 Share interview experiences
-- ❓ Ask preparation-related questions
-- ❤️ Like helpful posts
-- 💬 Add comments
-- 👥 Learn from other candidates
-
----
-
-# 🛠️ Tech Stack
-
-## Frontend
-
-| Technology | Purpose |
-|---|---|
-| ⚛️ React | User Interface |
-| ⚡ Vite | Frontend Tooling |
-| 🧭 React Router | Client-Side Routing |
-| 🎨 Tailwind CSS | Styling |
-| 🔗 Axios | API Communication |
-| ✨ Lucide React | Icons |
-
-## Backend
-
-| Technology | Purpose |
-|---|---|
-| 🟢 Node.js | JavaScript Runtime |
-| 🚂 Express.js | REST API |
-| 🍃 MongoDB | Database |
-| 🔷 Mongoose | Database Modeling |
-| 🔐 JWT | Authentication |
-| 📁 Multer | File Upload Handling |
-
-## AI & Cloud Services
-
-| Service | Purpose |
-|---|---|
-| 🧠 Google Gemini | AI Question Generation & Evaluation |
-| ☁️ Cloudinary | Resume Storage |
-| 🍃 MongoDB Atlas | Cloud Database |
-
----
-
-# 🧱 Architecture
-
-```text
-                    ┌─────────────────┐
-                    │      USER       │
-                    └────────┬────────┘
-                             │
-                             ▼
-              ┌──────────────────────────┐
-              │      INTERVIEWIQ UI      │
-              │                          │
-              │ React + Vite + Tailwind  │
-              └────────────┬─────────────┘
-                           │
-                        REST API
-                           │
-                           ▼
-              ┌──────────────────────────┐
-              │     EXPRESS BACKEND      │
-              │                          │
-              │  Auth • Profile          │
-              │  Interviews • Resume     │
-              │  Companies • Community   │
-              │  AI Services             │
-              └───────┬────────┬─────────┘
-                      │        │
-                      ▼        ▼
-             ┌─────────────┐  ┌──────────────┐
-             │   MongoDB   │  │  Gemini AI   │
-             │    Atlas    │  │              │
-             └─────────────┘  └──────────────┘
-                      │
-                      ▼
-               ┌─────────────┐
-               │ Cloudinary  │
-               └─────────────┘
-```
-
----
-
-# 🚀 Getting Started
-
-## 1️⃣ Clone the Repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/InterviewIQ.git
+git clone https://github.com/aadarshyadav7439/InterviewIQ.git
 cd InterviewIQ
 ```
 
-Replace `YOUR_USERNAME` with your GitHub username.
-
----
-
-## 2️⃣ Install Backend Dependencies
+### 2. Install backend dependencies
 
 ```bash
 cd server
 npm install
 ```
 
----
-
-## 3️⃣ Configure Backend Environment Variables
-
-Create:
-
-```text
-server/.env
-```
-
-Add:
+Create `server/.env`:
 
 ```env
 PORT=8000
-
 MONGODB_URI=your_mongodb_connection_string
-
 JWT_SECRET=your_jwt_secret
-
 GEMINI_API_KEY=your_gemini_api_key
-
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-> ⚠️ Never commit your `.env` file or expose API keys publicly.
-
----
-
-## 4️⃣ Start the Backend
-
-For development:
+Start the backend:
 
 ```bash
 npm run dev
 ```
 
-Or:
-
-```bash
-npm start
-```
-
-The backend will run on:
-
-```text
-http://localhost:8000
-```
-
----
-
-## 5️⃣ Install Frontend Dependencies
+### 3. Install frontend dependencies
 
 Open another terminal:
 
@@ -306,25 +126,13 @@ cd client
 npm install
 ```
 
----
-
-## 6️⃣ Configure Frontend Environment Variables
-
-Create:
-
-```text
-client/.env
-```
-
-Add:
+Create `client/.env`:
 
 ```env
 VITE_API_URL=http://localhost:8000/api
 ```
 
----
-
-## 7️⃣ Start InterviewIQ
+Start the frontend:
 
 ```bash
 npm run dev
@@ -336,116 +144,51 @@ The application will typically be available at:
 http://localhost:5173
 ```
 
-🎉 **InterviewIQ is ready to use.**
-
 ---
 
-# 🔐 Environment Variables
+## 🔐 Environment Variables
 
-## Backend
+### Backend
 
 | Variable | Description |
 |---|---|
-| `PORT` | Port used by the Express server |
-| `MONGODB_URI` | MongoDB database connection string |
-| `JWT_SECRET` | Secret used for JWT authentication |
+| `PORT` | Express server port |
+| `MONGODB_URI` | MongoDB connection string |
+| `JWT_SECRET` | JWT authentication secret |
 | `GEMINI_API_KEY` | Google Gemini API key |
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
 | `CLOUDINARY_API_KEY` | Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | Cloudinary API secret |
 
-## Frontend
+### Frontend
 
 | Variable | Description |
 |---|---|
-| `VITE_API_URL` | Base URL of the backend API |
+| `VITE_API_URL` | Backend API base URL |
+
+> ⚠️ Never commit `.env` files or expose API keys publicly.
 
 ---
 
-# 🗺️ Application Flow
-
-```text
-┌───────────────┐
-│   Sign Up     │
-│    / Login    │
-└───────┬───────┘
-        │
-        ▼
-┌───────────────┐
-│   Dashboard   │
-└───────┬───────┘
-        │
-        ├───────────────────┐
-        ▼                   ▼
-┌───────────────┐   ┌───────────────┐
-│    Profile    │   │    Resume     │
-└───────────────┘   └───────────────┘
-        │
-        ▼
-┌───────────────────────┐
-│ Choose Company + Role │
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│ Create AI Interview   │
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│ AI Generates Questions│
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│ Answer Questions      │
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│ AI Evaluation         │
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│ Scores + Feedback     │
-└───────────┬───────────┘
-            │
-            ▼
-┌───────────────────────┐
-│ Improve & Repeat      │
-└───────────────────────┘
-```
-
----
-
-# 📁 Project Structure
+## 📁 Project Structure
 
 ```text
 InterviewIQ/
-│
 ├── client/
-│   │
 │   ├── src/
 │   │   ├── assets/
-│   │   │   └── avatars/
-│   │   │
 │   │   ├── components/
 │   │   ├── context/
 │   │   ├── pages/
 │   │   └── services/
-│   │
-│   ├── package.json
-│   └── vite.config.js
+│   └── package.json
 │
 ├── server/
-│   │
 │   ├── controllers/
 │   ├── middleware/
 │   ├── models/
 │   ├── routes/
 │   ├── services/
-│   │
 │   ├── server.js
 │   └── package.json
 │
@@ -455,35 +198,27 @@ InterviewIQ/
 
 ---
 
-# 🌟 Future Improvements
+## 🌱 Future Improvements
 
-InterviewIQ is currently built as an MVP. Potential future improvements include:
-
-- 📊 Advanced analytics and performance tracking
-- 🎙️ More advanced voice interview experiences
-- 📄 AI-powered resume scoring
-- 🔔 Notifications
-- 💬 Real-time community features
-- 🏢 More detailed company-specific preparation
-- 📈 Long-term progress visualization
-- 🤝 Interview preparation matching and collaboration
+- Advanced performance analytics
+- Improved AI voice interview experience
+- AI-powered resume scoring
+- Real-time notifications
+- More company-specific preparation features
 
 ---
 
-# 👨‍💻 Author
+## 👨‍💻 Author
 
-**Aadarsh Yadav**
-
+**Aadarsh Yadav**  
 Computer Science Engineering Student
 
 ---
 
 <div align="center">
 
-## 🎯 Prepare with purpose. Practice with AI. Perform with confidence.
+### 🎯 Prepare with purpose. Practice with AI. Perform with confidence.
 
 **Built with ❤️ using React, Node.js, Express, MongoDB, and AI**
-
-⭐ If you found this project interesting, consider giving it a star!
 
 </div>
