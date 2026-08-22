@@ -22,11 +22,16 @@ export const getReports = async (req, res) => {
           bestScore: 0,
         },
         performanceTrend: [],
+        aiInsights: {
+          strengths: [],
+          weaknesses: [],
+          recommendedFocus: "",
+        },
         recentInterviews: [],
       });
     }
 
-    // Average score
+    // Summary calculations
     const totalScore = completedInterviews.reduce(
       (sum, interview) => sum + interview.overallScore,
       0,
@@ -34,7 +39,6 @@ export const getReports = async (req, res) => {
 
     const averageScore = Math.round(totalScore / totalCompleted);
 
-    // Best score
     const bestScore = Math.max(
       ...completedInterviews.map((interview) => interview.overallScore),
     );
@@ -47,6 +51,69 @@ export const getReports = async (req, res) => {
       targetRole: interview.targetRole,
       date: interview.createdAt,
     }));
+
+    // Parse and aggregate AI feedback
+    const allStrengths = [];
+    const allWeaknesses = [];
+
+    completedInterviews.forEach((interview) => {
+      if (!interview.feedback) return;
+
+      try {
+        const parsedFeedback = JSON.parse(interview.feedback);
+
+        if (Array.isArray(parsedFeedback.strengths)) {
+          allStrengths.push(...parsedFeedback.strengths);
+        }
+
+        if (Array.isArray(parsedFeedback.weaknesses)) {
+          allWeaknesses.push(...parsedFeedback.weaknesses);
+        }
+      } catch (error) {
+        console.error(
+          `Failed to parse feedback for interview ${interview._id}:`,
+          error.message,
+        );
+      }
+    });
+
+    // Count repeated feedback items
+    const getMostCommon = (items, limit = 3) => {
+      const counts = {};
+
+      items.forEach((item) => {
+        if (!item?.trim()) return;
+
+        const normalizedItem = item.trim().toLowerCase();
+
+        if (!counts[normalizedItem]) {
+          counts[normalizedItem] = {
+            text: item.trim(),
+            count: 0,
+          };
+        }
+
+        counts[normalizedItem].count += 1;
+      });
+
+      return Object.values(counts)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, limit)
+        .map((item) => item.text);
+    };
+
+    const strengths = getMostCommon(allStrengths);
+    const weaknesses = getMostCommon(allWeaknesses);
+
+    // Determine recommended focus
+    let recommendedFocus = "";
+
+    if (weaknesses.length > 0) {
+      recommendedFocus = `Focus on improving ${weaknesses[0].toLowerCase()} in your next few interviews.`;
+    } else if (totalCompleted > 0) {
+      recommendedFocus =
+        "Keep practicing consistently to identify more specific areas for improvement.";
+    }
 
     // Latest 5 interviews
     const recentInterviews = [...completedInterviews]
@@ -69,6 +136,11 @@ export const getReports = async (req, res) => {
         bestScore,
       },
       performanceTrend,
+      aiInsights: {
+        strengths,
+        weaknesses,
+        recommendedFocus,
+      },
       recentInterviews,
     });
   } catch (error) {

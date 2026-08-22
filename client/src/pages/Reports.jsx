@@ -4,7 +4,10 @@ import {
   ArrowUpRight,
   Award,
   BarChart3,
+  CheckCircle2,
   ClipboardCheck,
+  Lightbulb,
+  Target,
   TrendingUp,
 } from "lucide-react";
 import { getReports } from "../services/reportServices.js";
@@ -184,6 +187,107 @@ function Reports() {
               <span>Older</span>
               <span>Recent</span>
             </div>
+          </section>
+
+          {/* AI INSIGHTS */}
+          <section className="border-b border-gray-200 py-10">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#013364]">
+                AI Insights
+              </p>
+
+              <h2 className="mt-2 text-xl font-semibold text-gray-950">
+                What your interviews are telling you
+              </h2>
+
+              <p className="mt-2 text-sm text-gray-500">
+                Patterns identified from your completed interview feedback.
+              </p>
+            </div>
+
+            <div className="mt-8 grid gap-8 md:grid-cols-2">
+              {/* STRENGTHS */}
+              <div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={18} className="text-[#013364]" />
+
+                  <h3 className="font-semibold text-gray-900">
+                    Your strengths
+                  </h3>
+                </div>
+
+                {reports.aiInsights?.strengths?.length > 0 ? (
+                  <div className="mt-5 space-y-3">
+                    {reports.aiInsights.strengths.map((strength, index) => (
+                      <div
+                        key={index}
+                        className="border-l-2 border-[#013364] pl-4"
+                      >
+                        <p className="text-sm leading-6 text-gray-600">
+                          {strength}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-5 text-sm leading-6 text-gray-400">
+                    Complete more interviews to identify recurring strengths.
+                  </p>
+                )}
+              </div>
+
+              {/* WEAKNESSES */}
+              <div>
+                <div className="flex items-center gap-2">
+                  <Target size={18} className="text-[#013364]" />
+
+                  <h3 className="font-semibold text-gray-900">
+                    Areas to improve
+                  </h3>
+                </div>
+
+                {reports.aiInsights?.weaknesses?.length > 0 ? (
+                  <div className="mt-5 space-y-3">
+                    {reports.aiInsights.weaknesses.map((weakness, index) => (
+                      <div
+                        key={index}
+                        className="border-l-2 border-gray-300 pl-4"
+                      >
+                        <p className="text-sm leading-6 text-gray-600">
+                          {weakness}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-5 text-sm leading-6 text-gray-400">
+                    Complete more interviews to identify improvement patterns.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* RECOMMENDED FOCUS */}
+            {reports.aiInsights?.recommendedFocus && (
+              <div className="mt-10 border-t border-gray-100 pt-6">
+                <div className="flex gap-3">
+                  <Lightbulb
+                    size={19}
+                    className="mt-0.5 shrink-0 text-[#013364]"
+                  />
+
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">
+                      Recommended next focus
+                    </p>
+
+                    <p className="mt-1 text-sm leading-6 text-gray-600">
+                      {reports.aiInsights.recommendedFocus}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </section>
 
           {/* RECENT INTERVIEWS */}
