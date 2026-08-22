@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8A7CFF"/>
+      <stop offset="100%" stop-color="#5C43D6"/>
+    </linearGradient>
+    <clipPath id="clip-g3">
+      <circle cx="100" cy="100" r="100"/>
+    </clipPath>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#g3)"/>
+  <g clip-path="url(#clip-g3)">
+    <path d="M -62.3 -53.8 L -3.6 -52.1 L -41.1 -0.8 Z" fill="#EDE9FF" opacity="0.9"/>
+    <path d="M -3.6 -52.1 L 9.4 -0.7 L -41.1 -0.8 Z" fill="#C3B4FF" opacity="0.75"/>
+    <path d="M -3.6 -52.1 L 58.5 -67.2 L 9.4 -0.7 Z" fill="#D9D0FF" opacity="0.88"/>
+    <path d="M 58.5 -67.2 L 58.9 -9.8 L 9.4 -0.7 Z" fill="#C3B4FF" opacity="0.86"/>
+    <path d="M 58.5 -67.2 L 96.4 -45.6 L 58.9 -9.8 Z" fill="#EDE9FF" opacity="0.73"/>
+    <path d="M 96.4 -45.6 L 113.8 10.3 L 58.9 -9.8 Z" fill="#D9D0FF" opacity="0.89"/>
+    <path d="M 96.4 -45.6 L 158.3 -62.4 L 113.8 10.3 Z" fill="#C3B4FF" opacity="0.51"/>
+    <path d="M 158.3 -62.4 L 165.6 6.8 L 113.8 10.3 Z" fill="#C3B4FF" opacity="0.67"/>
+    <path d="M -41.1 -0.8 L 9.4 -0.7 L -50.2 42.8 Z" fill="#B29CFF" opacity="0.6"/>
+    <path d="M 9.4 -0.7 L 7.2 57.6 L -50.2 42.8 Z" fill="#EDE9FF" opacity="0.48"/>
+    <path d="M 9.4 -0.7 L 58.9 -9.8 L 7.2 57.6 Z" fill="#D9D0FF" opacity="0.58"/>
+    <path d="M 58.9 -9.8 L 49.4 41.9 L 7.2 57.6 Z" fill="#EDE9FF" opacity="0.8"/>
+    <path d="M 58.9 -9.8 L 113.8 10.3 L 49.4 41.9 Z" fill="#EDE9FF" opacity="0.72"/>
+    <path d="M 113.8 10.3 L 120.2 54.2 L 49.4 41.9 Z" fill="#EDE9FF" opacity="0.79"/>
+    <path d="M 113.8 10.3 L 165.6 6.8 L 120.2 54.2 Z" fill="#B29CFF" opacity="0.7"/>
+    <path d="M 165.6 6.8 L 171.1 65.6 L 120.2 54.2 Z" fill="#C3B4FF" opacity="0.86"/>
+    <path d="M -50.2 42.8 L 7.2 57.6 L -49.0 121.8 Z" fill="#C3B4FF" opacity="0.9"/>
+    <path d="M 7.2 57.6 L -2.9 118.4 L -49.0 121.8 Z" fill="#D9D0FF" opacity="0.59"/>
+    <path d="M 7.2 57.6 L 49.4 41.9 L -2.9 118.4 Z" fill="#EDE9FF" opacity="0.72"/>
+    <path d="M 49.4 41.9 L 53.4 122.2 L -2.9 118.4 Z" fill="#EDE9FF" opacity="0.46"/>
+    <path d="M 49.4 41.9 L 120.2 54.2 L 53.4 122.2 Z" fill="#D9D0FF" opacity="0.58"/>
+    <path d="M 120.2 54.2 L 120.6 98.7 L 53.4 122.2 Z" fill="#B29CFF" opacity="0.57"/>
+    <path d="M 120.2 54.2 L 171.1 65.6 L 120.6 98.7 Z" fill="#EDE9FF" opacity="0.59"/>
+    <path d="M 171.1 65.6 L 154.8 102.1 L 120.6 98.7 Z" fill="#C3B4FF" opacity="0.88"/>
+    <path d="M -49.0 121.8 L -2.9 118.4 L -42.0 163.2 Z" fill="#B29CFF" opacity="0.66"/>
+    <path d="M -2.9 118.4 L 3.5 159.4 L -42.0 163.2 Z" fill="#B29CFF" opacity="0.68"/>
+    <path d="M -2.9 118.4 L 53.4 122.2 L 3.5 159.4 Z" fill="#EDE9FF" opacity="0.64"/>
+    <path d="M 53.4 122.2 L 55.2 161.8 L 3.5 159.4 Z" fill="#C3B4FF" opacity="0.77"/>
+    <path d="M 53.4 122.2 L 120.6 98.7 L 55.2 161.8 Z" fill="#D9D0FF" opacity="0.65"/>
+    <path d="M 120.6 98.7 L 105.8 167.4 L 55.2 161.8 Z" fill="#C3B4FF" opacity="0.57"/>
+    <path d="M 120.6 98.7 L 154.8 102.1 L 105.8 167.4 Z" fill="#C3B4FF" opacity="0.46"/>
+    <path d="M 154.8 102.1 L 167.4 176.3 L 105.8 167.4 Z" fill="#C3B4FF" opacity="0.64"/>
+  </g>
+</svg>

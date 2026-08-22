@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="g5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFC24D"/>
+      <stop offset="100%" stop-color="#E8971A"/>
+    </linearGradient>
+    <clipPath id="clip-g5">
+      <circle cx="100" cy="100" r="100"/>
+    </clipPath>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#g5)"/>
+  <g clip-path="url(#clip-g5)">
+    <path d="M -220 220 L -140 -20 L -122 -20 L -202 220 Z" fill="#FFF3D6" opacity="0.9"/>
+    <path d="M -186 220 L -106 -20 L -88 -20 L -168 220 Z" fill="#FFE9B8" opacity="0.65"/>
+    <path d="M -152 220 L -72 -20 L -54 -20 L -134 220 Z" fill="#FFDD8F" opacity="0.5"/>
+    <path d="M -118 220 L -38 -20 L -20 -20 L -100 220 Z" fill="#FFF3D6" opacity="0.9"/>
+    <path d="M -84 220 L -4 -20 L 14 -20 L -66 220 Z" fill="#FFE9B8" opacity="0.65"/>
+    <path d="M -50 220 L 30 -20 L 48 -20 L -32 220 Z" fill="#FFDD8F" opacity="0.5"/>
+    <path d="M -16 220 L 64 -20 L 82 -20 L 2 220 Z" fill="#FFF3D6" opacity="0.9"/>
+    <path d="M 18 220 L 98 -20 L 116 -20 L 36 220 Z" fill="#FFE9B8" opacity="0.65"/>
+    <path d="M 52 220 L 132 -20 L 150 -20 L 70 220 Z" fill="#FFDD8F" opacity="0.5"/>
+    <path d="M 86 220 L 166 -20 L 184 -20 L 104 220 Z" fill="#FFF3D6" opacity="0.9"/>
+    <path d="M 120 220 L 200 -20 L 218 -20 L 138 220 Z" fill="#FFE9B8" opacity="0.65"/>
+    <path d="M 154 220 L 234 -20 L 252 -20 L 172 220 Z" fill="#FFDD8F" opacity="0.5"/>
+    <path d="M 188 220 L 268 -20 L 286 -20 L 206 220 Z" fill="#FFF3D6" opacity="0.9"/>
+  </g>
+</svg>

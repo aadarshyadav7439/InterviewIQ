@@ -8,6 +8,7 @@ import interviewRoutes from "./routes/interviewRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import companyRoutes from "./routes/companyRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
+import communityRoutes from "./routes/communityRoutes.js";
 import cors from "cors";
 
 
@@ -23,6 +24,7 @@ app.use("/api/interviews", interviewRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/companies", companyRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/community", communityRoutes);
 
 connectDB();
 const PORT = process.env.PORT || 8000; 
