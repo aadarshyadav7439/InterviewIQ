@@ -7,6 +7,26 @@ import {
   toggleLike,
 } from "../services/communityServices.js";
 
+import avatar1 from "../assets/avatars/avatar-1.svg";
+import avatar2 from "../assets/avatars/avatar-2.svg";
+import avatar3 from "../assets/avatars/avatar-3.svg";
+import avatar4 from "../assets/avatars/avatar-4.svg";
+import avatar5 from "../assets/avatars/avatar-5.svg";
+import avatar6 from "../assets/avatars/avatar-6.svg";
+import avatar7 from "../assets/avatars/avatar-7.svg";
+import avatar8 from "../assets/avatars/avatar-8.svg";
+
+const avatars = {
+  "avatar-1": avatar1,
+  "avatar-2": avatar2,
+  "avatar-3": avatar3,
+  "avatar-4": avatar4,
+  "avatar-5": avatar5,
+  "avatar-6": avatar6,
+  "avatar-7": avatar7,
+  "avatar-8": avatar8,
+};
+
 function Community() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -151,6 +171,7 @@ function Community() {
       <section className="mt-10 border-y border-gray-200 py-5">
         {!showCreatePost ? (
           <button
+            type="button"
             onClick={() => setShowCreatePost(true)}
             className="flex w-full items-center gap-3 text-left"
           >
@@ -211,7 +232,6 @@ function Community() {
                 className="inline-flex items-center gap-2 rounded-lg bg-[#013364] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#081f38] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Send size={16} />
-
                 {creating ? "Posting..." : "Post"}
               </button>
             </div>
@@ -250,9 +270,18 @@ function Community() {
         <section className="divide-y divide-gray-200">
           {posts.map((post) => (
             <article key={post._id} className="py-8">
+              {/* POST AUTHOR */}
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#eef4fa] text-sm font-semibold text-[#013364]">
-                  {post.userId?.name?.charAt(0)?.toUpperCase() || "U"}
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#eef4fa] text-sm font-semibold text-[#013364]">
+                  {avatars[post.userId?.avatar] ? (
+                    <img
+                      src={avatars[post.userId.avatar]}
+                      alt={`${post.userId?.name || "User"}'s avatar`}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    post.userId?.name?.charAt(0)?.toUpperCase() || "U"
+                  )}
                 </div>
 
                 <div>
@@ -277,6 +306,7 @@ function Community() {
               {/* POST ACTIONS */}
               <div className="mt-5 flex items-center gap-5">
                 <button
+                  type="button"
                   onClick={() => handleToggleLike(post._id)}
                   className={`inline-flex items-center gap-2 text-sm transition ${
                     post.likedByCurrentUser
@@ -303,19 +333,36 @@ function Community() {
                 {post.comments?.length > 0 && (
                   <div className="space-y-5">
                     {post.comments.map((comment) => (
-                      <div key={comment._id}>
-                        <p className="text-xs font-semibold text-gray-700">
-                          {comment.userId?.name || "User"}
-                        </p>
+                      <div key={comment._id} className="flex gap-3">
+                        {/* COMMENT AVATAR */}
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#eef4fa] text-[11px] font-semibold text-[#013364]">
+                          {avatars[comment.userId?.avatar] ? (
+                            <img
+                              src={avatars[comment.userId.avatar]}
+                              alt={`${comment.userId?.name || "User"}'s avatar`}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            comment.userId?.name?.charAt(0)?.toUpperCase() ||
+                            "U"
+                          )}
+                        </div>
 
-                        <p className="mt-1 text-sm leading-6 text-gray-500">
-                          {comment.content}
-                        </p>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-gray-700">
+                            {comment.userId?.name || "User"}
+                          </p>
+
+                          <p className="mt-1 text-sm leading-6 text-gray-500">
+                            {comment.content}
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>
                 )}
 
+                {/* ADD COMMENT */}
                 <form
                   onSubmit={(event) => handleAddComment(event, post._id)}
                   className="mt-5 flex gap-3"
@@ -336,7 +383,7 @@ function Community() {
                   <button
                     type="submit"
                     disabled={commentLoading[post._id]}
-                    className="text-sm font-semibold text-[#013364] disabled:opacity-50"
+                    className="text-sm font-semibold text-[#013364] transition hover:text-[#081f38] disabled:opacity-50"
                   >
                     {commentLoading[post._id] ? "..." : "Reply"}
                   </button>

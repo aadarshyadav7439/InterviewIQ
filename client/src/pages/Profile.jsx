@@ -8,10 +8,27 @@ import {
 } from "lucide-react";
 import { getProfile, updateProfile } from "../services/profileServices";
 import { useAuth } from "../context/AuthContext";
+import avatar1 from "../assets/avatars/avatar-1.svg";
+import avatar2 from "../assets/avatars/avatar-2.svg";
+import avatar3 from "../assets/avatars/avatar-3.svg";
+import avatar4 from "../assets/avatars/avatar-4.svg";
+import avatar5 from "../assets/avatars/avatar-5.svg";
+import avatar6 from "../assets/avatars/avatar-6.svg";
+import avatar7 from "../assets/avatars/avatar-7.svg";
+import avatar8 from "../assets/avatars/avatar-8.svg";
 
 const inputClassName =
   "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#013364] focus:ring-1 focus:ring-[#013364]/10";
-
+const avatars = [
+  { id: "avatar-1", image: avatar1 },
+  { id: "avatar-2", image: avatar2 },
+  { id: "avatar-3", image: avatar3 },
+  { id: "avatar-4", image: avatar4 },
+  { id: "avatar-5", image: avatar5 },
+  { id: "avatar-6", image: avatar6 },
+  { id: "avatar-7", image: avatar7 },
+  { id: "avatar-8", image: avatar8 },
+];
 function Profile() {
   const { updateUser } = useAuth();
 
@@ -25,7 +42,13 @@ function Profile() {
     const fetchProfile = async () => {
       try {
         const response = await getProfile();
-        setProfile(response.user);
+
+        setProfile({
+          ...response.user,
+          skills: Array.isArray(response.user.skills)
+            ? response.user.skills.join(", ")
+            : response.user.skills || "",
+        });
       } catch (error) {
         console.error(error);
         setError(error.response?.data?.message || "Failed to load profile");
@@ -36,6 +59,10 @@ function Profile() {
 
     fetchProfile();
   }, []);
+
+  const selectedAvatar = avatars.find(
+    (avatar) => avatar.id === profile?.avatar,
+  );
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -68,7 +95,12 @@ function Profile() {
         degree: profile.degree,
         branch: profile.branch,
         graduationYear: profile.graduationYear,
-        skills: profile.skills.split(",").map((skill) => skill.trim()).filter(Boolean),
+        skills: Array.isArray(profile.skills)
+          ? profile.skills
+          : profile.skills
+              .split(",")
+              .map((skill) => skill.trim())
+              .filter(Boolean),
         targetCompany: profile.targetCompany,
         targetRole: profile.targetRole,
       };
@@ -151,8 +183,16 @@ function Profile() {
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
           {/* Avatar */}
 
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#013364] text-xl font-semibold text-white">
-            {initials}
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#013364] text-xl font-semibold text-white">
+            {selectedAvatar ? (
+              <img
+                src={selectedAvatar.image}
+                alt={`${profile.name}'s avatar`}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              initials
+            )}
           </div>
 
           {/* Identity */}
@@ -225,6 +265,54 @@ function Profile() {
             </div>
           </div>
 
+          {/* AVATAR SELECTION */}
+
+          <div className="mb-7 rounded-xl border border-gray-200 bg-gray-50/70 p-4 sm:p-5">
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-gray-900">
+                Choose your avatar
+              </h3>
+
+              <p className="mt-1 text-xs leading-5 text-gray-500">
+                Pick an avatar that represents you across InterviewIQ.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-4 gap-3 sm:grid-cols-8">
+              {avatars.map((avatar) => {
+                const isSelected = profile.avatar === avatar.id;
+
+                return (
+                  <button
+                    key={avatar.id}
+                    type="button"
+                    onClick={() =>
+                      setProfile((prev) => ({
+                        ...prev,
+                        avatar: avatar.id,
+                      }))
+                    }
+                    className={`relative aspect-square overflow-hidden rounded-full transition ${
+                      isSelected
+                        ? "ring-3 ring-[#013364] ring-offset-2"
+                        : "opacity-80 hover:scale-105 hover:opacity-100"
+                    }`}
+                    aria-label={`Select ${avatar.id}`}
+                  >
+                    <img
+                      src={avatar.image}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+
+                    {isSelected && (
+                      <span className="absolute inset-0 bg-[#013364]/10" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <div className="grid gap-5 md:grid-cols-2">
             {/* NAME */}
 

@@ -1,16 +1,32 @@
 import { useNavigate } from "react-router-dom";
 import { Menu, LogOut, User } from "lucide-react";
+import avatar1 from "../assets/avatars/avatar-1.svg";
+import avatar2 from "../assets/avatars/avatar-2.svg";
+import avatar3 from "../assets/avatars/avatar-3.svg";
+import avatar4 from "../assets/avatars/avatar-4.svg";
+import avatar5 from "../assets/avatars/avatar-5.svg";
+import avatar6 from "../assets/avatars/avatar-6.svg";
+import avatar7 from "../assets/avatars/avatar-7.svg";
+import avatar8 from "../assets/avatars/avatar-8.svg";
 
-export default function DashboardNavbar({
-  onMenuClick,
-  user,
-  onLogout,
-}) {
+const avatars = {
+  "avatar-1": avatar1,
+  "avatar-2": avatar2,
+  "avatar-3": avatar3,
+  "avatar-4": avatar4,
+  "avatar-5": avatar5,
+  "avatar-6": avatar6,
+  "avatar-7": avatar7,
+  "avatar-8": avatar8,
+};
+
+export default function DashboardNavbar({ onMenuClick, user, onLogout }) {
   const navigate = useNavigate();
 
   const userName = user?.name || "User";
   const userRole = user?.role || "Candidate";
   const userInitial = userName.charAt(0).toUpperCase();
+  const userAvatar = avatars[user?.avatar];
 
   const hour = new Date().getHours();
 
@@ -59,8 +75,16 @@ export default function DashboardNavbar({
               aria-label="View profile"
               className="flex cursor-pointer items-center gap-2 rounded-xl px-2 py-1.5 transition hover:bg-white hover:shadow-sm"
             >
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#013364] text-sm font-semibold text-white shadow-sm">
-                {userInitial}
+              <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-[#013364] text-sm font-semibold text-white shadow-sm">
+                {userAvatar ? (
+                  <img
+                    src={userAvatar}
+                    alt={`${userName}'s avatar`}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  userInitial
+                )}
               </div>
 
               <div className="hidden min-w-0 text-left sm:block">
